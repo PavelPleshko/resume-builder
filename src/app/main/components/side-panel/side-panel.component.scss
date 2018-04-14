@@ -1,0 +1,20 @@
+.side-panel{
+	background-color:#282e3a;
+	position: fixed;
+    min-height: 100%;
+    width: 33.3%;
+    z-index:9;
+	&-content{
+	background-color:lighten(#282e3a,5%);
+	color:#fff;
+	position:relative;
+		max-height:800px;
+		overflow-y:auto;
+		overflow-x:hidden;
+		padding-bottom:10em;
+		padding-right:1em;
+
+	}
+
+	
+}

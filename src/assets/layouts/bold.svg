@@ -1,0 +1,110 @@
+<?xml version="1.0" standalone="no"?>
+
+<svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" width="816" height="1055" viewBox="0 0 816 1055" style="margin:0 auto;background:url(/Updated-MPR6-2X.png) no-repeat center top;" text-rendering="geometricPrecision">
+	<defs>
+		<style>
+			@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,500');			
+			.ffrc{font-family: 'Roboto Condensed', sans-serif;}
+			.font-italic{font-style:italic;}
+			.font-bold{font-weight:700;}
+			.name{fill:#3f3f40;font-size:36px;}	
+			.fname{fill:#009191}	
+			.address{fill:#6c6e70;font-size:13px}
+			.address-link{fill:#00ACEC;}
+			.section-text{fill:#b7b7b7;font-size:16px;font-weight:600}
+			.section-text-desc{font-size:13px}
+			.disc{fill:black;}
+				</style>
+	</defs>
+	<text x="84" y="79" class="name fname ffrc">JESSICA <tspan class="name lname ffrc">CLAIRE</tspan></text>
+	<text x="700" y="50" class="address ffrc">
+		<tspan x="543" y="63">H: 508-278-2542 </tspan>
+		<tspan x="637" y="62">|</tspan>
+		<tspan x="650" y="63">C: 781-669-5989  </tspan>
+		<tspan x="520" y="80">123 Main Street, San Francisco, CA 94122 </tspan> 
+		<tspan x="613" y="100" class="address-link">jessica.claire@live.com </tspan>
+	</text>
+	<line x1="83" y1="120" x2="733" y2="120" stroke-width="1" stroke="#000000" />
+	<text  class="ffrc section-text">
+		<tspan x="81" y="150">PROFESSIONAL</tspan> 
+		<tspan x="81" y="174">SUMMARY</tspan> 
+	</text>
+	<text class="ffrc section-text-desc">
+		<tspan x="229" y="146">Successful sales professional with 10+ years experience in large-scale food and retail</tspan>
+		<tspan x="229" y="165">environments. Implement cost control measures to ensure operations remain within company</tspan>
+		<tspan x="229" y="185">targets. Maximize bottom-line performance through P&#38;L, merchandising, staff management, </tspan>
+		<tspan x="229" y="203">loss control and inventory management initiatives.</tspan>
+	</text>
+	<text x="82" y="238" class="ffrc section-text">SKILLS</text>	
+	<text class="ffrc section-text-desc">
+	  	<tspan x="229" y="235">Executive team leadership</tspan>
+	 	<tspan x="229" y="254">Inventory report generation</tspan>
+	  	<tspan x="229" y="271">Client/Vendor relations</tspan>
+	  	<tspan x="229" y="290">Market analysis</tspan>
+	 </text>
+	<text class="ffrc section-text-desc">
+	  	<tspan x="482" y="235">Budgeting and finance</tspan>
+	 	<tspan x="482" y="254">Project management</tspan>
+	  	<tspan x="482" y="271">Team liaison</tspan>
+	  	<tspan x="482" y="290">Strong verbal communication</tspan>
+	</text>		
+	<text x="82" y="331" class="ffrc section-text">WORK HISTORY</text>	
+	<text x="228" y="328" class="ffrc section-text-desc font-bold">District Manager</text> 
+	<circle cx="326" cy="324" r="1.5" class="disc"></circle>
+	<text x="338" y="328" class="ffrc section-text-desc font-italic">Verizon Wireless</text> 
+	<text x="228" y="346" class="ffrc section-text-desc">San Francisco, CA</text> 
+	<circle cx="332" cy="342" r="1.5" class="disc"></circle>
+	<text x="342" y="346" class="ffrc section-text-desc">September 2009 to Current</text> 
+	<circle cx="244" cy="362" r="2" class="disc"></circle>
+	<circle cx="244" cy="398" r="2" class="disc"></circle>
+	<circle cx="244" cy="435" r="2" class="disc"></circle>		
+	<circle cx="244" cy="475" r="2" class="disc"></circle>
+	<circle cx="244" cy="494" r="2" class="disc"></circle>
+	<circle cx="244" cy="530" r="2" class="disc"></circle>
+	 <text  class="ffrc section-text-desc">
+	  	<tspan x="260" y="365">Directed recruitment/training/staff development initiatives to maximize productivity and</tspan>
+	  	<tspan x="260" y="384">revenue potential through development of a sales team.</tspan>
+	 	<tspan x="260" y="402">Successfully increased employee retention by created a positive work environment in 18</tspan>
+	 	<tspan x="260" y="422">stores.</tspan>
+	  	<tspan x="260" y="440">Administered daily operations to ensure policies were adhered to and understood by sales</tspan>
+	  	<tspan x="260" y="459">staff.</tspan>
+	  	<tspan x="260" y="478">Cultivated strong business relationships with customers to drive business development.</tspan>
+	  	<tspan x="260" y="497">Planned and executed floor merchandising initiatives in collaboration with merchandise </tspan>
+	  	<tspan x="260" y="516">management.</tspan>
+	  	<tspan x="260" y="534">Ensure store is prepared for internal audits through analysis/preparation of quality</tspan>
+	  	<tspan x="260" y="551">assurance and Inventory statistics.</tspan>
+	 </text>
+
+	<text x="228" y="578" class="ffrc section-text-desc font-bold">Operations manager</text> 
+	<circle cx="346" cy="575" r="1.5" class="disc"></circle>
+	<text x="358" y="578" class="ffrc section-text-desc font-italic">Walgreens, Inc </text> 
+	<text x="228" y="598" class="ffrc section-text-desc">San Francisco, CA</text> 
+	<circle cx="332" cy="593" r="1.5" class="disc"></circle>
+	<text x="342" y="598" class="ffrc section-text-desc">August 1997 to September 2009</text> 
+	<circle cx="244" cy="612" r="2" class="disc"></circle>
+	<circle cx="244" cy="652" r="2" class="disc"></circle>
+	<circle cx="244" cy="689" r="2" class="disc"></circle>		
+	<text  class="ffrc section-text-desc">
+	  	<tspan x="260" y="617">Oversaw opening/closing operations for a $4 million annual revenue store in compliance</tspan>
+	  	<tspan x="260" y="636">with current company policies/procedures.</tspan>
+	 	<tspan x="260" y="655">Managed operational costs by spearheading inventory control and leading shipping</tspan>
+	 	<tspan x="260" y="673">department activities as well as setting wage targets.</tspan>
+	  	<tspan x="260" y="692">Administered financial processes including accounts payable/accounts receivable,</tspan>
+	  	<tspan x="260" y="710">managing an accounting office and updating customer service files.</tspan>
+	 </text>
+	<text  class="ffrc section-text">
+		<tspan x="81" y="745">EDUCATION</tspan> 
+	</text>
+	<circle cx="377" cy="755" r="1.5" class="disc"></circle>	
+	<circle cx="333" cy="775" r="1.5" class="disc"></circle>		
+		
+	<text class="ffrc section-text-desc">
+		<tspan x="229" y="741" class="font-bold">Master of Business Administration</tspan>
+		<tspan x="418" y="741">- Operations Management Speech and Communication,</tspan>
+		<tspan x="229" y="760">Sociology and Psychology</tspan>
+		<tspan x="388" y="760" class="font-italic">San Francisco State University</tspan>
+		<tspan x="228" y="779">San Francisco, CA</tspan>
+		<tspan x="344" y="779">2009</tspan>
+		<tspan x="228" y="799">Coursework include: Speech and Communication, Sociology and Psychology</tspan>
+	</text>
+</svg>

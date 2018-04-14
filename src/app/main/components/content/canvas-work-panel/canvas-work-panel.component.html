@@ -1,0 +1,120 @@
+<div class="work-panel-content" [formGroup]="documentStylesForm">
+	<ul class="text-config-list">
+		<li class="text-config-list-element mr-1"  placement="bottom" ngbTooltip="Font family">
+			<app-custom-select-input [selectList]="fontFamilyOptions" [font]="true" [label]="'Font family'" formControlName="fontFamily"></app-custom-select-input>
+		</li>
+		<li class="text-config-list-element mr-2" placement="bottom" ngbTooltip="Font size">
+			<app-custom-select-input [selectList]="fontSizeOptions" [font]="false" [label]="'Size'" formControlName="fontSize"></app-custom-select-input>
+		</li>
+		<li class="text-config-list-element mr-1" placement="bottom" ngbTooltip="Text color">
+			<app-custom-color-picker #colorPicker formControlName="textColor" [label]="'Text color'">
+				
+      			
+			</app-custom-color-picker>
+		</li>
+		<li class="text-config-list-element mr-1" placement="bottom" ngbTooltip="Text bold">
+			<div class="input-group">
+			<label for="textBold" class="list-element-format" [ngClass]="{'active':textBold.checked,'disabled':notSelected}">
+				B
+			</label>
+			<input type="checkbox" [hidden]="true" #textBold formControlName="textBold" value="bold" id="textBold" aria-labelledby="'Text bold'">
+		</div>
+		</li>
+		<li class="text-config-list-element mr-1" placement="bottom" ngbTooltip="Text italic">
+			<div class="input-group">
+			<label for="textItalics" class="list-element-format text-italics" [ngClass]="{'active':textItalics.checked,'disabled':notSelected}">
+				I
+			</label>
+			<input type="checkbox" [hidden]="true" #textItalics formControlName="textItalics" value="italic" id="textItalics" aria-labelledby="'Text italics'">
+		</div>
+		</li>
+			<li class="text-config-list-element mr-3" placement="bottom" ngbTooltip="Text uppercase">
+			<div class="input-group">
+			<label for="textUppercase" class="list-element-format" [ngClass]="{'active':textUppercase.checked,'disabled':notSelected}">
+				U
+			</label>
+			<input type="checkbox" [hidden]="true" #textUppercase formControlName="textUppercase" id="textUppercase" value="uppercase" aria-labelledby="'Text uppercase'">
+		</div>
+		</li>
+			<li class="text-config-list-element" placement="bottom" ngbTooltip="Text align left">
+			<label for="textAlignLeft" class="list-element-format mr-1" [ngClass]="{'active':textAlignLeft.checked,'disabled':notSelected}" >
+					<i class="fa fa-align-left"></i>
+			</label>
+			<input type="radio" [hidden]="true" #textAlignLeft formControlName="textAlign" id="textAlignLeft" aria-labelledby="'Text align left'" value="left">
+		</li>
+		<li class="text-config-list-element" placement="bottom" ngbTooltip="Text align center">
+			<label for="textAlignCenter" class="list-element-format mr-1" [ngClass]="{'active':textAlignCenter.checked,'disabled':notSelected}">
+				<i class="fa fa-align-center"></i>
+			</label>
+			<input type="radio" [hidden]="true" #textAlignCenter formControlName="textAlign" id="textAlignCenter" aria-labelledby="'Text align center'" value="center">
+</li>
+<li class="text-config-list-element mr-2" placement="bottom" ngbTooltip="Text align right">
+			<label for="textAlignRight" class="list-element-format mr-1" [ngClass]="{'active':textAlignRight.checked,'disabled':notSelected}">
+					<i class="fa fa-align-right"></i>
+			</label>
+			<input type="radio" [hidden]="true" #textAlignRight formControlName="textAlign" id="textAlignRight" value="right" aria-labelledby="'Text align right'">
+		</li>
+
+		<li class="text-config-list-element">
+			 <div #spacingDrop class="d-inline-block dropdown-menu-custom">
+    
+       <button class="select-header form-control-plaintext hoverable text-center" placement="bottom" [ngbPopover]="spacingPop"><span>Spacing</span></button>
+   
+   <ng-template #spacingPop>
+      <div class="mt-3" attr.aria-labelledby="Spacing">
+      	  		 <div class="dropdown-menu-custom-appendix-body">
+     
+     <ul class="spacing-list">
+     	<li class="spacing-list-item">
+			<h5 class="spacing-list-item-header text-center text-nowrap text-muted"><small>Letter spacing</small></h5>
+		<div class="nowrap">
+     		<div class="spacing-list-item-slider">
+     		  <ngx-slider-moby [range]="false" color="black" [value_from]="documentStylesForm.get('letterSpacing').value" [min_value]="0" [max_value]="30" [showThumbLabels]="false" formControlName="letterSpacing"></ngx-slider-moby>
+     		</div>
+     		  <div class="spacing-list-item-amount">
+     		  	<span class="text-muted">
+     		  	{{(documentStylesForm.get('letterSpacing').value || '0') + 'px'}}
+     		  </span>
+     		  </div>
+     		</div>
+
+     	</li>
+
+     	<li class="spacing-list-item">
+     		<h5 class="spacing-list-item-header text-center text-nowrap text-muted"><small>Line height</small></h5>
+     		<div class="nowrap">
+     			<div class="spacing-list-item-slider">
+     		 		 <ngx-slider-moby [range]="false" color="black" [value_from]="documentStylesForm.get('lineHeight').value" [max_value]="6" [step]="0.1" [showThumbLabels]="false" formControlName="lineHeight"></ngx-slider-moby>
+     			</div>
+     		  <div class="spacing-list-item-amount">
+     		  	<span class="text-muted">
+     		  	{{documentStylesForm.get('lineHeight').value || '0'}}
+     		  </span>
+     		  </div>
+     		</div>
+     	</li>
+     </ul>
+    </div>
+      </div>
+  </ng-template>
+    </div>
+
+
+
+		
+		</li>
+	</ul>
+
+	 <ul class="text-actions-list">
+      <li class="text-actions-list-item">
+      	<span class="hoverable" (click)="groupSelectedEls()">Group</span>
+      </li>
+      <li class="text-actions-list-item">
+      	<span class="hoverable" (click)="copySelectedEl()">Copy</span>
+      </li>
+         <li class="text-actions-list-item">
+      	<i class="fa fa-trash" (click)="deleteSelectedEl()"></i>
+      </li>
+    </ul>
+</div>
+

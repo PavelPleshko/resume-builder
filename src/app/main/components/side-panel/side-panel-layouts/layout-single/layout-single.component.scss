@@ -1,0 +1,27 @@
+.layout-single{
+	
+	&-image-wrapper{
+	width:100%;
+	height:auto;
+	position:relative;
+	overflow:hidden;
+	}
+	&-image{
+	width:100%;
+	}
+	.image-overlay{
+	position:absolute;
+	top:50%;
+	left:50%;
+	transform:translateX(-50%) translateY(-50%);
+	width:100%;
+	height:100%;
+	background-color:rgba(0,0,0,.1);
+	display:block;
+	button{
+	position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+	}
+	}
+}

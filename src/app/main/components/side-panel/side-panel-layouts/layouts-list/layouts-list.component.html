@@ -1,0 +1,4 @@
+<div class="layouts-container row"  [@listAnimation]="layouts.length">
+
+<app-layout-single class="col-md-6 mt-3" *ngFor="let layout of layouts" [layout]="layout" (chooseTemplate)="onChooseTemplate($event)"></app-layout-single>
+</div>

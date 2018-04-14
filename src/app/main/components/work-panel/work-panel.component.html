@@ -1,0 +1,44 @@
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark">
+  <a class="navbar-brand" href="#">Ng-Resume</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+      	<div class="col">
+    <div ngbDropdown class="d-inline-block">
+       <a class="nav-link" ngbDropdownToggle>File</a>
+      <div ngbDropdownMenu aria-labelledby="file-dropdown">
+        <h5 class="dropdown-title"><strong>{{documentTitle}}</strong></h5>
+        <hr>
+        <button class="dropdown-item"><i class="fa fa-save mr-2"></i>Save changes</button>
+        <button class="dropdown-item"><i class="fa fa-arrow-up mr-2"></i>Export document</button>
+      </div>
+    </div>
+  </div>
+       
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Undo</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Redo</a>
+      </li>
+      <li class="nav-item status-saved">
+        <a class="nav-link text-muted">{{statusSaved}}</a>
+      </li>
+    </ul>
+
+    <ul class="panel-right-list">
+    	<li class="panel-right-list-element" placement="bottom" [ngbTooltip]="currentTooltipValue">
+    		<input type="text" (click)="enterEditMode()" [(ngModel)]="documentTitle" (blur)="saveTitle(title.value)" #title name="documentTitle" id="documentTitle" [ngClass]="{'form-control-plaintext':!editMode,'form-control':editMode}">
+    	</li>
+    	<li class="panel-right-list-element">
+    		<button class="btn btn-success text-light">Download</button>
+    	</li>
+    </ul>
+
+   
+  </div>
+</nav>

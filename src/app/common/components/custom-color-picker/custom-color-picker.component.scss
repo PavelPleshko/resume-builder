@@ -1,0 +1,36 @@
+.dropdown-toggle{
+	&:after{
+	display:none;
+	}
+	}
+
+.color-visible{
+	width:2em;
+	height:2em;
+	border-radius:3px;
+	cursor:pointer;
+}
+.color-add-new{
+	display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    font-size: 2em;
+    border: 1px solid #dedede;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 3px;
+    cursor:pointer;
+}
+
+
+.color-picker{
+	width:200px;
+	height:300px;
+
+	::ng-deep{
+	.sketch-picker{
+	    box-shadow: 0 0 0 0 rgba(0,0,0,.15), 0 8px 16px rgba(0,0,0,.15);
+	}
+	}
+}
+

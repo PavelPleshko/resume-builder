@@ -1,0 +1,6 @@
+
+<div class="main-wrapper {{layout.backgroundClass}}" [style.width]="currentWidth+'px'" [style.height]="currentHeight+'px'" [ngStyle]="{'background-color':backgroundColor}">
+
+<span [ng2-draggable]="true" contentCanvasElement resizable  class="unselectable" *ngFor="let element of layout.assets" id="asset-{{element.id}}" [element]="element" [currentRatio]="currentRatio"></span>
+</div>
+

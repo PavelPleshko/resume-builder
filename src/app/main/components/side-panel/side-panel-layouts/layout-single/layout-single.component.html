@@ -1,0 +1,8 @@
+<div class="layout-single">
+	<div class="layout-single-image-wrapper" [style.background-color]="layout.background">
+<img src="{{layout.image}}" class="layout-single-image">
+<div class="image-overlay text-center" *ngIf="showImageOverlay">
+	<button class="btn btn-primary" (click)="chooseTemplate()">CHOOSE</button>
+</div>
+</div>
+</div>

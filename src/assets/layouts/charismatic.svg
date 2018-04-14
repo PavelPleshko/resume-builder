@@ -1,0 +1,107 @@
+<?xml version="1.0" standalone="no"?>
+
+<svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" text-rendering="geometricPrecision" width="816" height="1055" viewBox="0 0 816 1055" style="margin:0 auto;">
+	<defs>
+		<style>
+			text{font-family:'Century Gothic';fill:#000;font-size:12.5px;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;}
+			.diff{fill:#c00000;}
+			.fsi{font-style:italic;}
+			.fwb{font-weight:bold;}
+			.name{font-size:38px;}
+			.contact-bg{fill:#000;}
+			.contact{fill:#fff;font-size:10.75px;}
+			.heading{font-size:19.5px;}
+			.subheading{font-size:13px;}
+			.line{stroke:#c00000;___stroke:#090;}
+			.disc{fill:#000;}
+			.duration{text-anchor:end;}
+			.dash{stroke:#000;}
+			*{___fill:red!important;}
+		</style>
+	</defs>
+
+	<text x="33" y="82" class="name fwb">JESSICA <tspan class="diff">CLAIRE</tspan></text>
+	<rect x="33" y="104" width="750" height="40" class="contact-bg" />
+	<text x="40" y="128" class="contact fwb">123 Main Street, San Francisco, CA 94122 | (H) 415-278-2542 | (C) 415-669-5989 | jessica.claire@live.com</text>
+	
+	<line x1="33" y1="179.5" x2="783" y2="179.5" class="line"></line>
+
+	<text>
+		<tspan x="33" y="172" class="heading">Professional Summary</tspan>
+		<tspan x="33" dy="26">Accomplished Operations executive with a successful track record overseeing regional Marketing, IT, HR/training and </tspan>
+		<tspan x="33" dy="21">property in company and franchise operations for a large chain of restaurants.</tspan>
+	</text>
+
+
+	<line x1="33" y1="260.5" x2="783" y2="260.5" class="line"></line>
+	<circle cx="51" cy="275" r="2.5" class="disc" />
+	<circle cx="51" cy="296" r="2.5" class="disc" />
+	<circle cx="51" cy="339" r="2.5" class="disc" />
+	<circle cx="425" cy="275" r="2.5" class="disc" />
+	<circle cx="425" cy="296" r="2.5" class="disc" />
+	<circle cx="425" cy="317" r="2.5" class="disc" />
+
+	<text>
+		<tspan x="33" y="253" class="heading">Skills</tspan>
+		<tspan x="64" y="279">Executive team leadership</tspan>
+		<tspan x="64" dy="21">Multi-million pound P&amp;L management expertise for South</tspan>
+		<tspan x="64" dy="22">East Region</tspan>
+		<tspan x="64" dy="21">Client/vendor relations</tspan>
+
+		<tspan x="438" y="279">Marketing/product line development</tspan>
+		<tspan x="438" dy="21">Staff/training policy development</tspan>
+		<tspan x="438" dy="22">Process improvement</tspan>
+	</text>
+
+
+	<line x1="33" y1="406.5" x2="783" y2="406.5" class="line"></line>
+	<circle cx="51" cy="463" r="2.5" class="disc" />
+	<circle cx="51" cy="505" r="2.5" class="disc" />
+	<circle cx="51" cy="526" r="2.5" class="disc" />
+	<circle cx="51" cy="548" r="2.5" class="disc" />
+	<circle cx="51" cy="569" r="2.5" class="disc" />
+	<circle cx="51" cy="591" r="2.5" class="disc" />
+	<circle cx="51" cy="661" r="2.5" class="disc" />
+	<circle cx="51" cy="703" r="2.5" class="disc" />
+	<circle cx="51" cy="746" r="2.5" class="disc" />
+
+	<text>
+		<tspan x="786" y="424" class="duration">09/2009 to Current</tspan>
+		<tspan x="786" y="622" class="duration">08/1997 to 09/2009</tspan>
+		<tspan x="33" y="398" class="heading">Work History</tspan>
+
+		<tspan x="33" dy="26" class="subheading fwb">District Manager</tspan>
+		<tspan x="33" dy="22">San Francisco, CA</tspan>
+		<tspan x="64" dy="21">Directed recruitment/training/staff development initiatives to maximize productivity and revenue potential through</tspan>
+		<tspan x="64" dy="21">development of a sales team.</tspan>
+		<tspan x="64" dy="22">Successfully increased employee retention by created a positive work environment in 18 stores.</tspan>
+		<tspan x="64" dy="21">Administered daily operations to ensure policies were adhered to and understood by sales staff.</tspan>
+		<tspan x="64" dy="21">Cultivated strong business relationships with customers to drive business development.</tspan>
+		<tspan x="64" dy="22">Planned and executed floor merchandising initiatives in collaboration with merchandise management.</tspan>
+		<tspan x="64" dy="21">Ensure store is prepared for internal audits through analysis/preparation of quality assurance and Inventory statistics.</tspan>
+
+		<tspan x="33" dy="27" class="subheading fwb">Operations manager</tspan>
+		<tspan x="33" dy="21"><tspan class="fwb">Walgreens, Inc</tspan> – San Francisco, CA</tspan>
+		<tspan x="64" dy="21">Oversaw opening/closing operations for a $4 million annual revenue store in compliance with current company</tspan>
+		<tspan x="64" dy="21">policies/procedures.</tspan>
+		<tspan x="64" dy="22">Managed operational costs by spearheading inventory control and leading shipping department activities as well as</tspan>
+		<tspan x="64" dy="21">setting wage targets.</tspan>
+		<tspan x="64" dy="22">Administered financial processes including accounts payable/accounts receivable, managing an accounting office</tspan>
+		<tspan x="64" dy="21">and updating customer service files.</tspan>
+	</text>
+
+
+	<line x1="33" y1="813.5" x2="783" y2="813.5" class="line"></line>
+	<text>
+		<tspan x="786" y="852" class="duration">2009</tspan>
+		<tspan x="786" y="943" class="duration">July 2009</tspan>
+		<tspan x="33" y="805" class="heading">Education</tspan>
+
+		<tspan x="33" dy="26"><tspan class="fwb">Master of Business Administration</tspan> : Operations Management Speech and Communication, Sociology and Psychology</tspan>
+		<tspan x="33" dy="21">Operations Management Speech and Communication, Sociology and Psychology</tspan>
+		<tspan x="33" dy="22"><tspan class="fwb">San Francisco State University</tspan> - San Francisco, CA</tspan>
+		<tspan x="33" dy="21">Operations Management Speech and Communication, Sociology and Psychology Operations Management Speech</tspan>
+		<tspan x="33" dy="21">and Communication, Sociology and Psychology</tspan>
+		<tspan x="33" dy="27" class="fwb">Certified Retail District Manager, Verizon Inc.: July 2009 Certifications Certified Retail District Manager, Verizon Inc.:</tspan>
+	</text>
+</svg>

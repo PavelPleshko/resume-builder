@@ -1,0 +1,194 @@
+$main-color:#31343a;
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,500');
+*{
+	margin:0;
+	padding:0;
+}
+
+:placeholder{
+	color:#dedede !important;
+}
+
+body{
+	background-color:#dedede;
+}
+
+.cursor-draggable{
+	cursor:move;
+}
+
+
+.editing .resize-handle{
+	width:8px;
+	height:8px;
+	position:absolute;
+	background: #635959;
+    border-radius: 50%;
+
+	&.left-top-resize{
+	left:-4px;
+	top:-4px;
+	cursor:nw-resize;
+	}
+	&.right-top-resize{
+	right:-4px;
+	top:-4px;
+	cursor:ne-resize;
+	}
+	&.left-bottom-resize{
+	left:-4px;
+	bottom:-4px;
+	cursor:sw-resize;
+	}
+	&.right-bottom-resize{
+	right:-4px;
+	bottom:-4px;
+	cursor:se-resize;
+	}
+}
+
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.selector-marker{
+	position:fixed;
+	width:0px;
+	height:0px;
+	background:rgba(0,0,0,.3);
+	border:1px solid rgba(0,0,0,.6);
+	transition:.05s ease-in-out;
+}
+
+.selected-by-marker{
+	outline: 1px dashed #7c7070;
+}
+
+	.selected{
+	outline: 1px dashed #7c7070;
+	cursor:text;
+	}
+
+	.hovered{
+	outline: 2px dashed #dedede;
+	}
+
+.dropdown-menu-custom-appendix{
+	
+	
+	font-size:110%;
+	
+	&.lg-size{
+	min-width:155%;
+	}
+	&:after{
+	position: absolute;
+    content: '';
+    display: block;
+    border: 14px solid transparent;
+    border-bottom-color: #fff;
+    top: -27px;
+    left: 5px;
+
+	
+	}
+
+	&:before{
+	    position: absolute;
+    content: '';
+    display: block;
+    border: 14px solid transparent;
+    border-bottom-color: rgba(0,0,0,.2);
+    border-bottom-width: 15px;
+    top: -29px;
+    left: 5px;
+    
+    z-index: -6;
+  
+	
+	}
+}
+
+.hoverable{
+	border-radius:5px;
+	border:none;
+	outline:none;
+	padding:4px;
+	&:hover{
+	background-color:rgba(0,0,0,.1);
+
+	}
+	&:focus{
+	outline:none;
+	}
+	
+}
+
+	.dropdown-title{
+		color: rgba(63, 70, 82, 0.4);
+	    font-size: 11px;
+	    font-weight: 500;
+	    min-width: 40px;
+	    text-align: center;
+	    text-transform: uppercase;
+	    margin: 8px 20px;
+
+	}
+	.left-line,.right-line{
+	 background-color: rgba(63, 70, 82, 0.15);
+    flex-grow: 1;
+    height: 1px;
+    margin: auto;
+	}
+
+	.nowrap{
+	display:inline-flex;
+	}
+
+	//gradient classes
+	.virgin-america{
+		background: #7b4397;  /* fallback for old browsers */
+		background: -webkit-linear-gradient(to right, #dc2430, #7b4397);  /* Chrome 10-25, Safari 5.1-6 */
+		background: linear-gradient(to right, #dc2430, #7b4397); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+	}
+
+	.portrait{
+		background: #8e9eab;  /* fallback for old browsers */
+		background: -webkit-linear-gradient(to right, #eef2f3, #8e9eab);  /* Chrome 10-25, Safari 5.1-6 */
+		background: linear-gradient(to right, #eef2f3, #8e9eab); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+	}
+
+	.turquoise-flow{
+		background: #136a8a;  /* fallback for old browsers */
+		background: -webkit-linear-gradient(to right, #267871, #136a8a);  /* Chrome 10-25, Safari 5.1-6 */
+		background: linear-gradient(to right, #267871, #136a8a); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+	}
+
+	.vine{
+		background: #00bf8f;  /* fallback for old browsers */
+		background: -webkit-linear-gradient(to right, #001510, #00bf8f);  /* Chrome 10-25, Safari 5.1-6 */
+		background: linear-gradient(to right, #001510, #00bf8f); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+	}
+
+	.flickr{
+		background: #ff0084;  /* fallback for old browsers */
+		background: -webkit-linear-gradient(to right, #33001b, #ff0084);  /* Chrome 10-25, Safari 5.1-6 */
+		background: linear-gradient(to right, #33001b, #ff0084); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+	}
+
+	.instagram{
+		background: #833ab4;  /* fallback for old browsers */
+		background: -webkit-linear-gradient(to right, #fcb045, #fd1d1d, #833ab4);  /* Chrome 10-25, Safari 5.1-6 */
+		background: linear-gradient(to right, #fcb045, #fd1d1d, #833ab4); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+	}
+
+	.atlas{
+		background: #FEAC5E;  /* fallback for old browsers */
+		background: -webkit-linear-gradient(to right, #4BC0C8, #C779D0, #FEAC5E);  /* Chrome 10-25, Safari 5.1-6 */
+		background: linear-gradient(to right, #4BC0C8, #C779D0, #FEAC5E); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+	}

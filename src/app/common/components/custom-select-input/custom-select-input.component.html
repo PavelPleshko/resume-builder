@@ -1,0 +1,16 @@
+    <div ngbDropdown class="d-inline-block dropdown-menu-custom">
+    	<div ngbDropdownToggle>
+       <input class="select-header" [attr.readonly]="font" [ngClass]="{'form-control-plaintext long':font,'short':!font}" type="text" [value]="value || label">
+   </div>
+      <div class="mt-3 dropdown-menu-custom-appendix" ngbDropdownMenu attr.aria-labelledby="{{label}}">
+      	  		 <div class="dropdown-menu-custom-appendix-body">
+      	<div class="toolbar-menuheader" *ngIf="font">
+	        <div class="left-line"></div>
+	        <div class="dropdown-title mb-2">Available fonts</div>
+	        <div class="right-line"></div>
+   		 </div>
+ 
+        <button class="dropdown-item" *ngFor="let item of selectList" [ngStyle]="{'font-family':font ? item.name : ''}" (click)="updateValue(item.id)">{{item.name}}<i class="fa" [class.fa-check]="value.id == item.id"></i></button>
+    </div>
+      </div>
+    </div>

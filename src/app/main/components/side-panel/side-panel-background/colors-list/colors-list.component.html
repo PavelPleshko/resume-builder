@@ -1,0 +1,21 @@
+<div class="row mr-4 mb-3">
+	<div class="col-sm-2 mb-2">
+	<app-custom-color-picker [label]="'Add color'" [sidePanel]="true" (valueChanged)="addNewColor($event)">
+			</app-custom-color-picker>
+
+		</div>
+<app-color-single *ngFor="let color of vividColors"  class="col-sm-2 mb-2" [color]="color" (chooseColor)="onChooseColor($event)">
+			</app-color-single>
+		
+</div>
+<div class="row mr-4 mb-2">
+<app-color-single *ngFor="let color of poorColors"  class="col-sm-2 mb-2" [color]="color" (chooseColor)="onChooseColor($event)">
+			</app-color-single>
+</div>
+
+<hr>
+
+<div class="row mr-4 mt-2">
+<app-color-single *ngFor="let color of gradientColors"  class="col-sm-2 mb-2" [color]="color" [gradient]="true" (chooseColor)="onChooseColor($event)">
+			</app-color-single>
+</div>

@@ -1,0 +1,10 @@
+<ul class="side-panel-menu">
+	<li class="active-indicator" #active_indicator></li>
+<li class="side-panel-menu-item" *ngFor="let menuItem of menuItems;let i=index;">
+	<a [routerLink]="[menuItem.link]" (click)="changeActiveItem(i)"><div class="item-link-inner"><i class="{{menuItem.iconName}}"></i>
+		<div class="item-link-inner-text">{{menuItem.title}}</div></div>
+	</a>
+</li>
+
+
+</ul>
