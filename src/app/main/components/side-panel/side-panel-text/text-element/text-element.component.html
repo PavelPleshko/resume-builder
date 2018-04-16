@@ -1,0 +1,2 @@
+<ng-container *ngIf="list"><li appTextElement class="inner" *ngFor="let innerElement of textElement.innerAssets" [element]="innerElement" [list]="list"></li></ng-container>
+<ng-container *ngIf="!list"><span appTextElement class="inner" *ngFor="let innerElement of textElement.innerAssets" [element]="innerElement" [list]="list"></span></ng-container>

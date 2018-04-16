@@ -150,6 +150,10 @@ body{
 	display:inline-flex;
 	}
 
+	.card-columns{
+	column-count:2;
+	}
+
 	//gradient classes
 	.virgin-america{
 		background: #7b4397;  /* fallback for old browsers */

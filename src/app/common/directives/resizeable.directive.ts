@@ -85,9 +85,12 @@ export class Resizable implements OnInit,AfterViewInit {
       this.px = e.clientX;
     this.py = e.clientY;
     let resizerName=e.resizer+'Resizer';
+    this._element.nativeElement.contentEditable = 'false';
       this.resizer=this[resizerName];
     }),switchMap(()=>defer(()=>mouseMove))).subscribe();
-    let mouseUp = fromEvent(document,'mouseup');
+    let mouseUp = fromEvent(document,'mouseup').pipe(tap(()=>{
+          this._element.nativeElement.contentEditable = 'true';
+    }));
     let mouseMove = fromEvent(document,'mousemove').pipe(takeUntil(mouseUp),tap((e)=>this.onCornerMove(e)));
 this.listeners.push(mdown);
   }
@@ -123,8 +126,6 @@ this.listeners.push(mdown);
     this.px = event.clientX;
     this.py = event.clientY;
   }
-
-
 
 
   stopListeners(){

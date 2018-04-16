@@ -2,6 +2,17 @@ import { Injectable } from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 
+export interface ILayoutSvgElement{
+	id?:number;
+	pos?:object;
+	attrs:object;
+	name?:string;
+	url?:string;
+	element?:string;
+	path?:string;
+	viewBox?:string;
+	innerAssets?:ILayoutSvgElement[] | any;
+}
 
 export interface ILayoutElement{
 	id?:number;
@@ -20,6 +31,7 @@ export class ILayout{
 	backgroundClass?:string ='';
 	image?:string='';
 	assets?:Array<ILayoutElement>=[];
+	svgAssets?:Array<ILayoutSvgElement>=[];
 }
 
 
@@ -182,14 +194,24 @@ let activeLayout = data.activeLayout;
 this.resetBackground(activeLayout);
 let propertyToChange = isGradient ? 'backgroundClass' : 'background';
 activeLayout[propertyToChange] = value;
-
 let newData:AppState= {...data,activeLayout:activeLayout};
 		this.data.next(newData);
 }
 
-resetBackground(layout){
+resetBackground(layout:ILayout){
 layout.background='';
 layout.backgroundClass='';
+}
+
+addNewElement(element:ILayoutElement){
+let data = this.data.getValue();
+let activeLayout = data.activeLayout;
+let assets = activeLayout.assets;
+element.id=assets.length+1;
+activeLayout.assets = assets.concat(element)
+		let newData:AppState= {...data,activeLayout:activeLayout};
+		this.data.next(newData);
+
 }
 
 

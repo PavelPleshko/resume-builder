@@ -1,6 +1,6 @@
- <div ngbDropdown #dropDown="ngbDropdown" [autoClose]="!sidePanel" class="dropdown-menu-custom">
+ <div ngbDropdown #dropDown="ngbDropdown" [autoClose]="false" class="dropdown-menu-custom">
     	<div class="color-visible-outer" ngbDropdownToggle (click)="pushColor(dropDown)">
-   			  <div class="color-visible" *ngIf="!sidePanel" [style.background-color]="currentColor.rgb"></div>
+   			  <div class="color-visible" *ngIf="!sidePanel" [style.background-color]="currentColor.rgb || '#000000'"></div>
              <div class="color-add-new" *ngIf="sidePanel" [style.background-color]="currentColor.rgb">
                <i class="fa fa-plus"></i>
             </div>

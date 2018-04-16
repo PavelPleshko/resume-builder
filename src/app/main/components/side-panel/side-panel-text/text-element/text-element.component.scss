@@ -1,0 +1,14 @@
+:host{
+	cursor:pointer;
+	opacity:.8;
+
+	&:not(.inner):hover{
+
+	opacity:1;
+	}
+	::ng-deep{
+	*{
+	color:#ffffff !important;
+	}
+	}
+}

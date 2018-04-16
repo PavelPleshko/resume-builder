@@ -25,7 +25,7 @@ blurListener:any;
 
 @HostBinding('style.position') 
 get positionType(){
-let pos = this.inner ? 'relative':'absolute'
+let pos = this.inner ? 'relative':'absolute';
 return pos;	
 }
 
@@ -48,31 +48,39 @@ onUnhover(){
 }
 @HostListener('dblclick',['$event'])
 onDoubleClick(evt){
-	if(!this._selected && !this.inner){
+	if(!this._selected && ((this.list && !this.inner) || !this.list)){
+
+	this.removeSelectedClass();
 		this._selected = true;
+		
+		this.contentService.pushIntoSelection(this.el.nativeElement,false);
 		this.assignDimensions();
 		this.el.nativeElement.className = this.el.nativeElement.className.replace(' hovered','');
-		this.el.nativeElement.className += ' selected';
+		this.el.nativeElement.classList.add('selected');
 
 		this.el.nativeElement.className = this.el.nativeElement.className.replace('cursor-draggable','');
 		this.el.nativeElement.isEditing = true;
 		this.el.nativeElement.canDrag = false;
+		if(this.el.nativeElement['ResizeableDir']){
 			this.el.nativeElement['ResizeableDir'].editMode();
+		}
+		
 		this.renderer2.setAttribute(this.el.nativeElement,'contenteditable','true');
 		this.el.nativeElement.focus();
-	    var caretRange = this.getMouseEventCaretRange(evt);
+		
+			var caretRange = this.getMouseEventCaretRange(evt);
 	    var self = this;
-	    this.contentService.pushIntoSelection(this.el.nativeElement,false);
+	    
 	    setTimeout(function() {
 	        self.selectRange(caretRange);
+	        evt.stopPropagation();
 	    }, 10);
+		
+		
 	    let contentElement = document.querySelector('app-content');
 	    this.blurListener = this.renderer2.listen(contentElement,'custom-blur',this.blurElement.bind(this));
 	}
 }
-
-
-
 
 
 ngOnInit(){
@@ -81,6 +89,11 @@ ngOnInit(){
 		this.el.nativeElement.style.top = this.inner ? '' :  this.element.attrs.y+'px';
 			this.createElement(this.el.nativeElement,this.element);
 	}
+	this.contentService.selectedElement.subscribe((element)=>{
+		if(element && element.id.includes('inner') && this.inner){
+			this._selected=false;
+		}
+	})
 }
 
 ngAfterViewInit(){
@@ -95,12 +108,19 @@ updatePosition(id){
 
 
 blurElement(event){
-	event.stopPropagation();
-	if(this._selected){
+	this.removeSelectedClass();
+	if(this.inner){
+			this.el.nativeElement.style.width = '';
+			this.el.nativeElement.style.height = '';
+		}
+if(this._selected){
 		this._selected = false;
 		this.el.nativeElement.isEditing = false;
 		this.el.nativeElement.canDrag = true;
-		this.el.nativeElement['ResizeableDir'].editMode();
+		if(this.el.nativeElement['ResizeableDir']){
+			this.el.nativeElement['ResizeableDir'].editMode();
+		}
+		
 		this.el.nativeElement.className += ' cursor-draggable';
 		this.el.nativeElement.className = this.el.nativeElement.className.replace('selected','');
 		this.renderer2.setAttribute(this.el.nativeElement,'contenteditable','false');
@@ -112,8 +132,19 @@ blurElement(event){
 
 assignDimensions(){
 		let dims:ClientRect = this.el.nativeElement.getBoundingClientRect();
-		this.el.nativeElement.style.width = dims.width+'px';
-		this.el.nativeElement.style.height = dims.height+'px';
+		let parentDims:ClientRect = this.el.nativeElement.parentElement.getBoundingClientRect();
+		let width,height;
+		width = dims.width;
+		height = dims.height;
+		if(dims.width>parentDims.width){
+			width = parentDims.width;
+		}
+
+		if(dims.height>parentDims.height){
+			height = parentDims.height;
+		}
+		this.el.nativeElement.style.width = width+'px';
+		this.el.nativeElement.style.height = height+'px';
 }
 
   createElement(parent,newElement){
@@ -175,6 +206,15 @@ selectRange(range) {
             sel.addRange(range);
         }
     }
+}
+
+removeSelectedClass(){
+	let selectedEls = document.querySelectorAll('.selected');
+	[].forEach.call(selectedEls,(el)=>{
+		if(el && el.id.includes('inner')){
+			el.classList.remove('selected');
+		}
+	})
 }
 
 

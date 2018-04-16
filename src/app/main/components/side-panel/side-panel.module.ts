@@ -13,6 +13,10 @@ import { LayoutSingleComponent } from './side-panel-layouts/layout-single/layout
 import { ColorsListComponent } from './side-panel-background/colors-list/colors-list.component';
 import { ColorSingleComponent } from './side-panel-background/color-single/color-single.component';
 import {SharedModule} from '../../../common/shared.module';
+import { TextElementsListComponent } from './side-panel-text/text-elements-list/text-elements-list.component';
+import { TextElementComponent } from './side-panel-text/text-element/text-element.component';
+import { ElementsListComponent } from './side-panel-elements/elements-list/elements-list.component';
+import { ElementSingleComponent } from './side-panel-elements/element-single/element-single.component';
 
 
 
@@ -33,7 +37,11 @@ const Routes:Routes = [
    SidePanelSearchComponent, SidePanelBackgroundComponent,
     SidePanelTextComponent, LayoutsListComponent,
      LayoutSingleComponent, ColorsListComponent,
-      ColorSingleComponent],
-  exports:[SidePanelComponent]
+      ColorSingleComponent,
+      TextElementsListComponent,
+      TextElementComponent,
+      ElementsListComponent,
+      ElementSingleComponent],
+  exports:[SidePanelComponent],
 })
 export class SidePanelModule { }

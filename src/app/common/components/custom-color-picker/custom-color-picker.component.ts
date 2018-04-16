@@ -1,6 +1,6 @@
-import { Component, forwardRef,ChangeDetectionStrategy,Input,ChangeDetectorRef,Output,EventEmitter } from '@angular/core';
+import { Component, forwardRef,ChangeDetectionStrategy,Input,ViewChild,ChangeDetectorRef,Output,EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-
+import {DomSanitizer,SafeStyle} from '@angular/platform-browser';
 const CUSTOM_SELECT_ACCESSOR = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => CustomColorPickerComponent),
@@ -16,6 +16,7 @@ const CUSTOM_SELECT_ACCESSOR = {
 export class CustomColorPickerComponent implements ControlValueAccessor {
 @Input() label:string;
 @Input() sidePanel:boolean = false;
+@ViewChild('dropDown') dropDown;
 value: string='';
 focused: string;
 currentColor:any='';
@@ -53,6 +54,13 @@ registerOnChange(fn) {
 pushColor(dropdownInstance){
   if(this.sidePanel && !dropdownInstance.isOpen() && this.currentColor){
     this.valueChanged.emit(this.currentColor);
+    this.currentColor='';
+  }
+}
+
+closeDd(){
+  if(this.dropDown && this.dropDown.isOpen()){
+    this.dropDown.close();
     this.currentColor='';
   }
 }

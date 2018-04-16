@@ -1,4 +1,6 @@
-import { Component, OnInit,Input,AfterViewInit,ChangeDetectionStrategy,ChangeDetectorRef,HostBinding} from '@angular/core';
+import { Component, OnInit,Input,AfterViewInit,
+	ViewContainerRef,ViewChild,ChangeDetectionStrategy,
+	ChangeDetectorRef,HostBinding} from '@angular/core';
 import {FormBuilder,FormGroup} from '@angular/forms';
 import {fontFamily} from '../../../../common/styleOptions/font-family';
 import {fontSize} from '../../../../common/styleOptions/font-size';
@@ -71,6 +73,7 @@ documentStylesForm:FormGroup;
 @Input() currentData:any=null;
 fontFamilyOptions:any;
 fontSizeOptions:any;
+@ViewChild('color_picker') color_picker:ViewContainerRef;
 
 @HostBinding('class.panel_visible')
 get visible(){
@@ -89,6 +92,7 @@ _visible:boolean = false;
   	this.fontSizeOptions = fontSize;
   	this.createForm();
   		this.contentService.selectedElement.subscribe((element)=>{
+  		console.log(element)
   		if(element){
   			this._visible = true;
   			let data = this.extractDataFromElement(element);
@@ -96,6 +100,9 @@ _visible:boolean = false;
   			this.cdr.markForCheck();
   		}else{
   			this._visible = false;
+  			this.color_picker['closeDd']();
+  			this.assignDefaultopts();
+  			this.updateForm(this.currentData);
   		}
   		
   	})
@@ -147,7 +154,7 @@ this.cdr.detectChanges();
   	let data:any = {};
   	data.fontFamily = el.style.fontFamily;
   	data.fontSize = el.style.fontSize.replace('px','');
-  	data.textColor = el.style.color || '#000000';
+  	data.textColor = el.style.color;
   	data.textBold = el.style.fontWeight=='bold';
   	data.textItalics = el.style.fontStyle == 'italic';
   	data.textAlign = el.style.textAlign;
