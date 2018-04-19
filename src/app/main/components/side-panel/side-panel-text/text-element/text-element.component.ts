@@ -17,7 +17,10 @@ export class TextElementComponent implements OnInit {
 
 @HostListener('click')
 addElement(){
-this.addedElement.emit(this.textElement);
+  let element:any = Object.assign({},this.textElement);
+  element.attrs.x=100;
+  element.attrs.y=100;
+this.addedElement.emit(element);
 }
   ngOnInit() {
   	if(this.textElement){

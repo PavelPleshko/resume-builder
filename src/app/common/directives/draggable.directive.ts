@@ -25,8 +25,11 @@ export class Draggable implements OnInit{
 
 startListeners(){
 		let mouseUp = fromEvent(document,'mouseup').pipe(tap(()=>{
-			let id = this.viewRef['_data'].componentView.component.element.id;
-			this.viewRef['_data'].componentView.component.updatePosition(id);
+			if(this.viewRef['_data'].componentView && 
+				this.viewRef['_data'].componentView.component.updatePosition){
+				let id = this.viewRef['_data'].componentView.component.element.id;
+				this.viewRef['_data'].componentView.component.updatePosition(id);
+			}
 			this.md=false;
 		}));
 	let mouseMove = fromEvent(document,'mousemove').pipe(takeUntil(mouseUp),throttleTime(50),tap((e)=>this.mouseMoveHandler(e)));
@@ -37,7 +40,10 @@ mouseDown.subscribe();
 }
 
 mouseDownHandler(event){
-	this._allowDrag = this.element.nativeElement.canDrag;
+	if(this.element.nativeElement.hasOwnProperty('canDrag')){
+		this._allowDrag = this.element.nativeElement.canDrag;
+	}
+	
 		if(event.button === 2){
 			return;
 		}	
@@ -59,13 +65,18 @@ mouseMoveHandler(event){
 @Input('ng2-draggable')
 set allowDrag(value:boolean){
 	
-	this._allowDrag = this.element.nativeElement.canDrag;
+	if(this.element.nativeElement.hasOwnProperty('canDrag')){
+		this._allowDrag = this.element.nativeElement.canDrag;
+	}else{
+		this._allowDrag = value;
+	}
 	this.applyRemoveClass();
 }
 
 applyRemoveClass(){
 	if(this._allowDrag){
 		this.element.nativeElement.className += ' cursor-draggable';
+		this.element.nativeElement.style.position='absolute';
 	}else{
 		this.element.nativeElement.className = this.element.nativeElement.className.replace(' cursor-draggable','');
 	}

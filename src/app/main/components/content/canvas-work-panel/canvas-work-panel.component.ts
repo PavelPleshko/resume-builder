@@ -92,7 +92,6 @@ _visible:boolean = false;
   	this.fontSizeOptions = fontSize;
   	this.createForm();
   		this.contentService.selectedElement.subscribe((element)=>{
-  		console.log(element)
   		if(element){
   			this._visible = true;
   			let data = this.extractDataFromElement(element);

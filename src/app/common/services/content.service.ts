@@ -8,7 +8,7 @@ export class ContentService {
 
 selection:BehaviorSubject<any> = new BehaviorSubject<any>(null);
 selectedElement:BehaviorSubject<any> = new BehaviorSubject<any>(null);
-
+editableSvgs:BehaviorSubject<any[]> = new BehaviorSubject<any[]>(null);
   constructor() { 
   
   }
@@ -37,6 +37,15 @@ getSelectedElementVal(multi:boolean){
 		value = this.selectedElement.getValue();
 	}
 	return value;
+}
+
+
+pushSvgsToEdit(svgEls){
+	this.editableSvgs.next(svgEls);
+}
+
+removeSvgsFromEdit(){
+	this.editableSvgs.next(null);
 }
 
 

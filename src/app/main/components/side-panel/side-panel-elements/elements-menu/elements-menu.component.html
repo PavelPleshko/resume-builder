@@ -1,0 +1,3 @@
+<div class="row px-4">
+	<app-element-menu-single *ngFor="let item of menuItems" [element]="item" [class.active]="item.title.toLowerCase() == activeMenuItem" class="col-sm-4" (elSetChanged)="onElSetChanged($event)"></app-element-menu-single>
+</div>

@@ -1,4 +1,4 @@
-import { Directive, AfterViewInit,HostBinding,Component, ElementRef,Renderer2, OnInit, OnDestroy,ChangeDetectorRef } from '@angular/core';
+import { Directive, AfterViewInit,HostBinding,Component,Input, ElementRef,Renderer2, OnInit, OnDestroy,ChangeDetectorRef } from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {fromEvent} from 'rxjs/observable/fromEvent';
 import {switchMap,takeUntil,tap,throttleTime,delay,map} from 'rxjs/operators';
@@ -15,10 +15,14 @@ export class Resizable implements OnInit,AfterViewInit {
   leftBottom;
   rightBottom;
   listeners=[];
+  elements:any=[];
   px=0;
   py=0;
   resizer:Function;
   elStyle;
+
+  @Input() resizable:string;
+
 
   public constructor(private _element: ElementRef, private _renderer: Renderer2,private cdr:ChangeDetectorRef) {
 
@@ -27,7 +31,7 @@ export class Resizable implements OnInit,AfterViewInit {
   
 
   public ngOnInit(): void {
-    this.createHandles(this._element.nativeElement);
+  
     this._element.nativeElement['ResizeableDir'] = this;
     this.elStyle = this._element.nativeElement.style;
   }
@@ -39,12 +43,16 @@ export class Resizable implements OnInit,AfterViewInit {
   @HostBinding('class.editing') _editMode:boolean = false;
   editMode(){
     if(this._element.nativeElement.isEditing){
+        this.createHandles(this._element.nativeElement);
       this.startListeners();
       this._editMode=true;
+      this.cdr.reattach();
       return true;
     }else{
       this.stopListeners();
+      this.destroyHandles(this._element.nativeElement);
       this._editMode = false;
+       this.cdr.reattach();
       return false;
     }
   }
@@ -63,6 +71,7 @@ export class Resizable implements OnInit,AfterViewInit {
       this.rightBottom = this._renderer.createElement('div');
      this.rightBottom.className+='resize-handle right-bottom-resize';
      this._renderer.appendChild(parent,this.rightBottom);
+     this.elements.push(this.leftTop,this.leftBottom,this.rightTop,this.rightBottom);
   }
   startListeners(){
     let leftTop=fromEvent(this.leftTop,'mousedown').pipe(map(e=>{
@@ -100,23 +109,51 @@ this.listeners.push(mdown);
     this.elStyle.top = (Number(this.elStyle.top.replace('px','')) + offsetY)+'px';
     this.elStyle.width = (Number(this.elStyle.width.replace('px','')) - offsetX)+'px';
     this.elStyle.height= (Number(this.elStyle.height.replace('px','')) - offsetY)+'px';
+    if(this.resizable){
+      let childSvg = this._element.nativeElement.children[0];
+      let viewBox = childSvg.getAttribute('viewBox').split(' ');
+   let width = Number(viewBox[2]) - offsetX;
+   let height = Number(viewBox[3]) - offsetY;
+    childSvg.setAttribute('viewBox',`0 0 ${width} ${height}`);
+    }
   }
 
   rightTopResizer(offsetX: number, offsetY: number) {
     this.elStyle.top = (Number(this.elStyle.top.replace('px','')) + offsetY)+'px';
     this.elStyle.width = (Number(this.elStyle.width.replace('px','')) + offsetX)+'px';
     this.elStyle.height= (Number(this.elStyle.height.replace('px','')) - offsetY)+'px';
+      if(this.resizable){
+      let childSvg = this._element.nativeElement.children[0];
+      let viewBox = childSvg.getAttribute('viewBox').split(' ');
+   let width = Number(viewBox[2]) + offsetX;
+   let height = Number(viewBox[3]) - offsetY;
+    childSvg.setAttribute('viewBox',`0 0 ${width} ${height}`);
+    }
   }
 
   leftBottomResizer(offsetX: number, offsetY: number) {
     this.elStyle.left = (Number(this.elStyle.left.replace('px','')) + offsetX)+'px';
     this.elStyle.width = (Number(this.elStyle.width.replace('px','')) - offsetX)+'px';
     this.elStyle.height= (Number(this.elStyle.height.replace('px','')) + offsetY)+'px';
+      if(this.resizable){
+      let childSvg = this._element.nativeElement.children[0];
+      let viewBox = childSvg.getAttribute('viewBox').split(' ');
+   let width = Number(viewBox[2]) - offsetX;
+   let height = Number(viewBox[3]) + offsetY;
+    childSvg.setAttribute('viewBox',`0 0 ${width} ${height}`);
+    }
   }
 
   rightBottomResizer(offsetX: number, offsetY: number) {
     this.elStyle.width = (Number(this.elStyle.width.replace('px','')) + offsetX)+'px';
     this.elStyle.height= (Number(this.elStyle.height.replace('px','')) + offsetY)+'px';
+      if(this.resizable){
+      let childSvg = this._element.nativeElement.children[0];
+      let viewBox = childSvg.getAttribute('viewBox').split(' ');
+   let width = Number(viewBox[2]) + offsetX;
+   let height = Number(viewBox[3]) + offsetY;
+    childSvg.setAttribute('viewBox',`0 0 ${width} ${height}`);
+    }
   }
 
   onCornerMove(event: any) {
@@ -125,6 +162,12 @@ this.listeners.push(mdown);
     this.resizer(offsetX, offsetY);  
     this.px = event.clientX;
     this.py = event.clientY;
+  }
+
+  destroyHandles(parent){
+    this.elements.forEach((element)=>{
+      this._renderer.removeChild(parent,element);
+    })
   }
 
 

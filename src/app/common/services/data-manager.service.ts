@@ -4,6 +4,7 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 export interface ILayoutSvgElement{
 	id?:number;
+	type?:string;
 	pos?:object;
 	attrs:object;
 	name?:string;
@@ -12,6 +13,9 @@ export interface ILayoutSvgElement{
 	path?:string;
 	viewBox?:string;
 	innerAssets?:ILayoutSvgElement[] | any;
+	changable?:boolean;
+	stretchable?:boolean;
+	stretchWhileResize?:boolean;
 }
 
 export interface ILayoutElement{
@@ -38,19 +42,22 @@ export class ILayout{
 export interface AppState{
 	documentTitle:string,
 	layouts:ILayout[],
-	activeLayout:ILayout
+	activeLayout:ILayout,
+	activeSetOfElements:any[]
 }
 
 
 @Injectable()
 export class DataManagerService {
 data:BehaviorSubject<AppState>;
+currentIds:any=[];
 
   constructor() { 
   	let data:AppState = {
   		documentTitle:'Untitled',
   		layouts:this.getLayouts(),
-  		activeLayout:new ILayout()
+  		activeLayout:new ILayout(),
+  		activeSetOfElements:[]
   	}
 	this.data = new BehaviorSubject<AppState>(data);
   }
@@ -73,7 +80,7 @@ getLayouts():ILayout[]{
 	return [
 	{id:'1',title:'centered',background:'#ffffff',image:'/assets/layouts/centered.svg',assets:[]},
 
-	{id:'2',title:'bold',background:'#ffffff',image:'/assets/layouts/bold.svg',assets:[
+	{id:'2',title:'bold',background:'#ffffff',image:'/assets/layouts/bold.svg',svgAssets:[],assets:[
 
 	{id:1,attrs:{x:81,y:34},element:'span',mainStyles:{'font-size':'36px','color':'#009191','font-family':'Roboto Condensed,sans-serif','text-transform':'uppercase'},
 	content:'Jessica '},
@@ -117,9 +124,6 @@ getLayouts():ILayout[]{
 	{id:24,attrs:{x:228,y:321},element:'span',mainStyles:{'font-size':'13px','font-family':'Roboto Condensed,sans-serif'},content:'San Francisco, CA'},
 	{id:25,attrs:{x:342,y:321},element:'span',mainStyles:{'font-size':'13px','font-family':'Roboto Condensed,sans-serif'},content:'September 2009 to Current'},
 
-
-
-
 	{id:26,attrs:{x:235,y:345},element:'ul',mainStyles:{'font-size':'13px','font-family':'Roboto Condensed,sans-serif'},
 	innerAssets:[
 		{attrs:{},mainStyles:{'font-size':'13px','font-family':'Roboto Condensed,sans-serif','width':'85%'},element:'li',content:'Directed recruitment/training/staff development initiatives to maximize productivity and revenue potential through development of a sales team.'},
@@ -161,12 +165,14 @@ getLayouts():ILayout[]{
 }
 
 
-deleteAssetFromLayout(index:any):void{
+deleteAssetFromLayout(index:any,svg?:boolean):void{
 	let data = this.data.getValue();
 	let activeLayout = data.activeLayout;
-	let assets = activeLayout.assets;
-	activeLayout.assets = assets.filter((asset)=>asset.id != index);
-	let newData:AppState= {...data,activeLayout:activeLayout};
+	let assets =svg ? 'svgAssets' : 'assets';
+	console.log(index);
+	let newAssets = activeLayout[assets].filter((asset)=>asset.id != index);
+	this.currentIds = this.currentIds.filter((id)=>id != index);
+	let newData:AppState= {...data,activeLayout:{...activeLayout,[assets]:newAssets}};
 	this.data.next(newData);
 }
 
@@ -178,7 +184,9 @@ copyAndInsertAssetInLayout(index:any):void{
 	let assetToCopy = assets.find((asset)=>asset.id == index);
 	if(assetToCopy){
 		newAsset = Object.assign({},assetToCopy);		
-		newAsset.id = assets.length+1;
+		newAsset.id = this.generateUI(this.currentIds);
+		newAsset.attrs['x'] =Number(newAsset.attrs['x'])+10;
+		newAsset.attrs['y'] =Number(newAsset.attrs['y'])+10;
 		activeLayout.assets = assets.concat(newAsset)
 		let newData:AppState= {...data,activeLayout:activeLayout};
 		this.data.next(newData);
@@ -203,16 +211,45 @@ layout.background='';
 layout.backgroundClass='';
 }
 
-addNewElement(element:ILayoutElement){
+addNewElement(element:ILayoutElement,type?:string){
+	console.log(element);
+	let property;
+	if(!type || type == 'standard'){
+		property = 'assets';
+	}else if(type=='svg'){
+		property = 'svgAssets';
+	}
 let data = this.data.getValue();
 let activeLayout = data.activeLayout;
-let assets = activeLayout.assets;
-element.id=assets.length+1;
-activeLayout.assets = assets.concat(element)
-		let newData:AppState= {...data,activeLayout:activeLayout};
+let assets = activeLayout[property];
+element.id=this.generateUI(this.currentIds);
+console.log(element);
+let newAssets = assets.concat(element)
+		let newData:AppState= {...data,activeLayout:{...activeLayout,[property]:newAssets}};
+		console.log(newData);
 		this.data.next(newData);
+}
 
+changeActiveSetOfElements(els){
+	let data = this.data.getValue();
+	let newData:AppState= {...data,activeSetOfElements:els};
+	this.data.next(newData);
 }
 
 
+
+generateUI(currentIds){
+  var text = "",
+      possible = "ABCDEF",
+  possibleNums = "0123456789";
+  for( var i=0; i < 2; i++ ){
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+
+  for( var j=0; j < 3; j++ ){
+    text += possibleNums.charAt(Math.floor(Math.random() * 10));
+  }
+  console.log(text);
+return currentIds.indexOf(text)<0 ? (currentIds.push(text),text) : this.generateUI(currentIds);
+}
 }

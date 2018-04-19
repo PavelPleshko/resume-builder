@@ -4,6 +4,7 @@ import {ContentService} from '../../../common/services/content.service';
 import {pluck,distinctUntilChanged,switchMap,takeUntil,tap,filter,throttleTime} from 'rxjs/operators';
 import {ILayout} from '../../../common/services/data-manager.service';
 import {fromEvent} from 'rxjs/observable/fromEvent';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-content',
@@ -21,6 +22,7 @@ contentCanvas:any;
   resizer:Function;
   elStyle:any;
   selection:HTMLElement[]=[];
+  selectedSvg:Observable<any>;
 
   constructor(private dataManager:DataManagerService,
     private contentService:ContentService,
@@ -36,7 +38,6 @@ contentCanvas:any;
   		}
   	})
   	this.startListening();
-  	
   }
 
   startListening(){

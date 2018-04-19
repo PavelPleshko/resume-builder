@@ -1,1 +1,3 @@
-<app-elements-list [elements]="elements"></app-elements-list>
+<app-elements-menu (elSetChanged)="assignElements($event)"></app-elements-menu>
+
+<app-elements-list (chooseElement)="onChooseElement($event)"></app-elements-list>

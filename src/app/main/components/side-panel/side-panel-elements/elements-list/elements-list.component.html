@@ -1,8 +1,9 @@
-<div class="text-muted my-2 text-center">Click on element to add</div>
+<ng-container *ngIf="elements"><div class="text-muted my-4 text-center">Click on element to add</div>
 
-<div class="card-columns">
+<div class="row px-5">
 
-<div  appElementSingle *ngFor="let element of elements" class=" mb-3 extra-element" [element]="element" (addedElement)="onAddedElement($event)"></div>
+<div  appElementSingle *ngFor="let element of elements" class="col-sm-3 mb-3" [element]="element" (chooseElement)="onChosenElement($event)"></div>
 
 
 </div>
+</ng-container>

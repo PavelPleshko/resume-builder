@@ -1,0 +1,10 @@
+<div class="work-panel-content" [formGroup]="svgForm">
+	<ul class="text-config-list" formArrayName="colors">
+		<li class="text-config-list-element mr-1" *ngFor="let colorControl of svgForm.get('colors').controls;let i=index;">
+			<app-custom-color-picker [label]="'Color-'+i" [value]="colorControl.value" [formControl]="svgForm.get('colors').controls[i]">
+				
+      			
+			</app-custom-color-picker>
+		</li>
+</ul>
+</div>

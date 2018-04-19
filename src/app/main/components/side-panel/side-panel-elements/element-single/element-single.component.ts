@@ -1,5 +1,5 @@
-import { Component, OnInit,AfterViewInit,Input,
-	ChangeDetectionStrategy,ChangeDetectorRef } from '@angular/core';
+import { Component,AfterViewInit,Input,
+	ChangeDetectionStrategy,ChangeDetectorRef,HostListener,Output,EventEmitter } from '@angular/core';
 
 @Component({
   selector: '[appElementSingle]',
@@ -7,12 +7,15 @@ import { Component, OnInit,AfterViewInit,Input,
   styleUrls: ['./element-single.component.scss'],
   changeDetection:ChangeDetectionStrategy.OnPush
 })
-export class ElementSingleComponent implements OnInit,AfterViewInit {
+export class ElementSingleComponent implements AfterViewInit {
 @Input() element:any;
+@Output() chooseElement = new EventEmitter();
   constructor(private cdr:ChangeDetectorRef) { }
 
-  ngOnInit() {
-  }
+@HostListener('click')
+chooseElementHandler(){
+this.chooseElement.emit(this.element);
+}
 
   ngAfterViewInit(){
   	this.cdr.detach();
