@@ -1,5 +1,5 @@
 import { Component, OnInit} from '@angular/core';
-import {svgShapeElements,svgLineElements} from '../../../../common/builder-assets/svg-assets';
+import {svgShapeElements,svgLineElements,svgIconElements} from '../../../../common/builder-assets/svg-assets';
 import {DataManagerService} from '../../../../common/services/data-manager.service';
 
 @Component({
@@ -25,6 +25,9 @@ assignElements(keyword){
 			break;
 		case "lines":
 			this.dataManager.changeActiveSetOfElements(svgLineElements);
+			break;
+		case "icons":
+			this.dataManager.changeActiveSetOfElements(svgIconElements);
 			break;
 	}
 }

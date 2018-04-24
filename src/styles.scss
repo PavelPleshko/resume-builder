@@ -3,6 +3,7 @@ $main-color:#31343a;
 *{
 	margin:0;
 	padding:0;
+	transform-origin: 0px 0px 0px;
 }
 
 :placeholder{
@@ -15,6 +16,11 @@ body{
 
 .cursor-draggable{
 	cursor:move;
+}
+
+.disabled{
+	opacity:.5;
+	pointer-events:none;
 }
 
 
@@ -229,6 +235,17 @@ body{
 
 	.rotating{
 	color:#17a2b8;
+	}
+
+	.draggable-control{
+	position:absolute;
+	border:1px dashed black;
+	cursor:move;
+	z-index:10000;
+	}
+
+	.wrapper-draggable{
+	position:fixed;
 	}
 
 

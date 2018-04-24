@@ -157,7 +157,11 @@ assignDimensions(){
 if(newElement.content){
 
 	  let text = this.renderer2.createText(newElement.content);
+	  if(!newElement.innerAssets && !this.inner){
+	  	this.renderer2.addClass(el,'single-parent-content');
+	  }
   this.renderer2.appendChild(el,text);
+
 }
 
   for(var key in newElement.mainStyles){

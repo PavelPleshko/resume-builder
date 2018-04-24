@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-
+import {mergeObject} from '../helpers/functions';
 
 export interface ILayoutSvgElement{
 	id?:number;
@@ -16,16 +16,19 @@ export interface ILayoutSvgElement{
 	changable?:boolean;
 	stretchable?:boolean;
 	stretchWhileResize?:boolean;
+	transform?:object;
+	scalable?:object;
+	fixed?:boolean;
 }
 
-export interface ILayoutElement{
+export class ILayoutElement{
 	id?:number;
-	attrs:object;
+	attrs:object={};
 	element:string;
 	content?:string;
-	innerAssets?:ILayoutElement[];
-	mainStyles?:object;
-	extraStyles?:object;
+	innerAssets?:ILayoutElement[]=[];
+	mainStyles?:object={};
+	extraStyles?:object={};
 }
 
 export class ILayout{
@@ -169,31 +172,57 @@ deleteAssetFromLayout(index:any,svg?:boolean):void{
 	let data = this.data.getValue();
 	let activeLayout = data.activeLayout;
 	let assets =svg ? 'svgAssets' : 'assets';
-	console.log(index);
 	let newAssets = activeLayout[assets].filter((asset)=>asset.id != index);
 	this.currentIds = this.currentIds.filter((id)=>id != index);
 	let newData:AppState= {...data,activeLayout:{...activeLayout,[assets]:newAssets}};
 	this.data.next(newData);
 }
 
-copyAndInsertAssetInLayout(index:any):void{
-	let newAsset:ILayoutElement;
+copyAndInsertAssetInLayout(index:any,type:string,properties?:any):void{
+	let newAsset:ILayoutElement | any;
+	let assets:string;
+	let attrs:string;
 	let data = this.data.getValue();
 	let activeLayout = data.activeLayout;
-	let assets = activeLayout.assets;
-	let assetToCopy = assets.find((asset)=>asset.id == index);
+	assets = type == 'svg' ? 'svgAssets' : 'assets';
+	attrs = type == 'svg' ? 'pos' : 'attrs';
+	let assetToCopy = activeLayout[assets].find((asset)=>asset.id == index);
+
 	if(assetToCopy){
-		newAsset = Object.assign({},assetToCopy);		
+		newAsset = copy(assetToCopy);
+		if(properties){
+			newAsset = this.mergeRecursive(newAsset,properties);
+			
+		}
+		console.log(properties,newAsset);
 		newAsset.id = this.generateUI(this.currentIds);
-		newAsset.attrs['x'] =Number(newAsset.attrs['x'])+10;
-		newAsset.attrs['y'] =Number(newAsset.attrs['y'])+10;
-		activeLayout.assets = assets.concat(newAsset)
+		newAsset[attrs]['x'] =Number(newAsset[attrs]['x'])+10;
+		newAsset[attrs]['y'] =Number(newAsset[attrs]['y'])+10;
+		activeLayout[assets] = [...activeLayout[assets],newAsset];
 		let newData:AppState= {...data,activeLayout:activeLayout};
 		this.data.next(newData);
 	}else{
 		return;
 	}
+}
+
+
+mergeRecursive(mainObj,props?){
+	let newObj:any = {};
+	if(props){
+		newObj = mergeObject(mainObj,props,null);
+	}else{
+		newObj = mainObj;
+	}
 	
+	if(mainObj.innerAssets && mainObj.innerAssets.length){
+		mainObj.innerAssets.forEach((asset,idx)=>{
+			newObj.innerAssets[idx]=this.mergeRecursive(asset);
+		})
+	}else{
+
+	}
+	return newObj;
 }
 
 changeBgColor(value:string,isGradient:boolean):void{
@@ -212,7 +241,6 @@ layout.backgroundClass='';
 }
 
 addNewElement(element:ILayoutElement,type?:string){
-	console.log(element);
 	let property;
 	if(!type || type == 'standard'){
 		property = 'assets';
@@ -223,10 +251,8 @@ let data = this.data.getValue();
 let activeLayout = data.activeLayout;
 let assets = activeLayout[property];
 element.id=this.generateUI(this.currentIds);
-console.log(element);
 let newAssets = assets.concat(element)
 		let newData:AppState= {...data,activeLayout:{...activeLayout,[property]:newAssets}};
-		console.log(newData);
 		this.data.next(newData);
 }
 
@@ -252,4 +278,15 @@ generateUI(currentIds){
   console.log(text);
 return currentIds.indexOf(text)<0 ? (currentIds.push(text),text) : this.generateUI(currentIds);
 }
+}
+
+
+function copy(aObject) {
+  var bObject, v, k;
+  bObject = Array.isArray(aObject) ? [] : {};
+  for (k in aObject) {
+    v = aObject[k];
+    bObject[k] = (typeof v === "object") ? copy(v) : v;
+  }
+  return bObject;
 }

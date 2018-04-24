@@ -1,10 +1,23 @@
 <div class="work-panel-content" [formGroup]="svgForm">
-	<ul class="text-config-list" formArrayName="colors">
-		<li class="text-config-list-element mr-1" *ngFor="let colorControl of svgForm.get('colors').controls;let i=index;">
+	<ul class="config-list">
+		<li class="config-list-element mr-1" *ngFor="let colorControl of svgForm.get('colors').controls;let i=index;">
 			<app-custom-color-picker [label]="'Color-'+i" [value]="colorControl.value" [formControl]="svgForm.get('colors').controls[i]">
 				
       			
 			</app-custom-color-picker>
 		</li>
+			<li class="config-list-element ml-2" placement="bottom" ngbTooltip="z-index">
+			<app-custom-number-input formControlName="zIndex"></app-custom-number-input>
+		</li>
+</ul>
+
+<ul class="actions-list">
+	 <li class="actions-list-item">
+      	<span class="hoverable" (click)="copySelectedEl()">Copy</span>
+      </li>
+	 <li class="actions-list-item">
+      	<i class="fa fa-trash" (click)="deleteSelectedEl()"></i>
+      </li>
+
 </ul>
 </div>

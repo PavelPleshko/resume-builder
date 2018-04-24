@@ -6,6 +6,7 @@ import { Resizable } from './directives/resizeable.directive';
 import { Streachable } from './directives/streachable.directive';
 import { Rotatable } from './directives/rotatable.directive';
 import { CustomSelectInputComponent } from './components/custom-select-input/custom-select-input.component';
+import { CustomNumberInputComponent } from './components/custom-number-input/custom-number-input.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { ColorCircleModule } from 'ngx-color/circle';
 import { ColorSketchModule } from 'ngx-color/sketch';
@@ -16,9 +17,9 @@ import {ContentService} from './services/content.service';
   imports: [
     CommonModule,FormsModule,ReactiveFormsModule,NgbModule,ColorCircleModule,ColorSketchModule
   ],
-  declarations: [Draggable,Resizable,Streachable,Rotatable,CustomSelectInputComponent,CustomColorPickerComponent],
+  declarations: [Draggable,Resizable,Streachable,Rotatable,CustomSelectInputComponent,CustomColorPickerComponent,CustomNumberInputComponent],
   exports:[FormsModule,ReactiveFormsModule,Draggable,Resizable,Streachable,Rotatable,
-  CustomSelectInputComponent,CustomColorPickerComponent,
+  CustomSelectInputComponent,CustomColorPickerComponent,CustomNumberInputComponent,
   NgbModule,ColorCircleModule,ColorSketchModule]
 
 })

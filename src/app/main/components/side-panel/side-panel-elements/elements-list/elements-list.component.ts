@@ -23,7 +23,8 @@ elements:any;
   }
 
   onChosenElement(element){
-  	this.chooseElement.emit(element);
+    let newEl = Object.assign({},element);
+  	this.chooseElement.emit(newEl);
   }
 
 }

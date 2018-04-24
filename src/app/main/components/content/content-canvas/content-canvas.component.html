@@ -1,11 +1,13 @@
 
 <div class="main-wrapper {{layout.backgroundClass}}" [style.width]="currentWidth+'px'" [style.height]="currentHeight+'px'" [ngStyle]="{'background-color':backgroundColor}">
-
+	<ng-container *ngIf="initializeMassControl">
+	<app-mass-selection-control [ng2-draggable]="initializeMassControl" [ngStyle]="{'left':massSelectorPosition.left+'px','top':massSelectorPosition.top+'px','width':massSelectorPosition.width+'px','height':massSelectorPosition.height+'px'}"></app-mass-selection-control>
+	</ng-container>
 <span [ng2-draggable]="true" contentCanvasElement resizable  class="unselectable" *ngFor="let element of layout.assets" id="asset-{{element.id}}" [element]="element" [currentRatio]="currentRatio"></span>
 
 
-<div [ng2-draggable]="true" rotatable *ngFor="let svg of layout.svgAssets;let i=index;" class="" [resizable]="svg.stretchWhileResize"  id="resizer-{{i}}" (dblclick)="changeActiveSvg(i)" [style.width]="svg.pos.width+'px'" [style.height]="svg.pos.height+'px'">
-<svg version="1.1" [stretchable]="svg.stretchable" attr.id="svgasset-{{svg.id}}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" attr.viewBox="{{svg.viewBox}}" xml:space="preserve" class="baseColors" style="position: absolute;width: 100%;height: 100%;">
+<div [ng2-draggable]="true" rotatable *ngFor="let svg of layout.svgAssets;let i=index;" [resizable]="svg.stretchWhileResize" class="unselectable svg-element"  id="resizer-{{i}}" (dblclick)="changeActiveSvg(i)" [ngStyle]="{'width':svg.pos.width+'px','height':svg.pos.height+'px','top':svg.pos.y+'px','left':svg.pos.x+'px'}">
+<svg version="1.1" [stretchable]="svg.stretchable" attr.id="svgasset-{{svg.id}}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" attr.viewBox="{{svg.viewBox}}" xml:space="preserve" style="position: absolute;width: 100%;height: 100%;">
 <svg:g appContentSvgAsset [element]="svg" [selected]="activeSvg >=0 && activeSvg===i" />
 
 	</svg>

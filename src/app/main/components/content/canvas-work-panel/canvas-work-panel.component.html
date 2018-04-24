@@ -103,13 +103,19 @@
 
 		
 		</li>
+		<li class="text-config-list-element ml-2">
+			<app-custom-select-input [selectList]="textDecorOptions" [label]="'Text decoration'" formControlName="textDecoration"></app-custom-select-input>
+		</li>
+		<li class="text-config-list-element ml-1" placement="bottom" ngbTooltip="z-index">
+			<app-custom-number-input [label]="'z-index'" formControlName="zIndex"></app-custom-number-input>
+		</li>
 	</ul>
 
 	 <ul class="text-actions-list">
-      <li class="text-actions-list-item">
+      <li class="text-actions-list-item"  [class.disabled]="!massSelectionActive || !groupingAllowed">
       	<span class="hoverable" (click)="groupSelectedEls()">Group</span>
       </li>
-      <li class="text-actions-list-item">
+      <li class="text-actions-list-item" [class.disabled]="massSelectionActive">
       	<span class="hoverable" (click)="copySelectedEl()">Copy</span>
       </li>
          <li class="text-actions-list-item">

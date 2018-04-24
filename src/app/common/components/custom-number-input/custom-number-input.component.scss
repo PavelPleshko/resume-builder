@@ -1,0 +1,38 @@
+
+:host{
+
+display:flex;
+
+.change-value-btn{
+	border:none;
+	box-shadow:none;
+	padding:0 .3em;
+	cursor:pointer;
+	opacity:.8;
+
+	&:hover{
+	opacity:1;
+	}
+}
+
+.select-header{
+	border:none;
+	box-shadow:none;
+	border-top:1px solid #dedede;
+	border-bottom:1px solid #dedede;
+	padding: .2em .7em;
+
+	width:2.5em;
+	text-align:center;
+	}
+
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+ 
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+}
+	

@@ -4,10 +4,14 @@ import { Component, OnInit,Input,AfterViewInit,
 import {FormBuilder,FormGroup} from '@angular/forms';
 import {fontFamily} from '../../../../common/styleOptions/font-family';
 import {fontSize} from '../../../../common/styleOptions/font-size';
+import {textDecor} from '../../../../common/styleOptions/text-decoration';
 import {ContentService} from '../../../../common/services/content.service';
-import {DataManagerService} from '../../../../common/services/data-manager.service';
+import {DataManagerService,ILayoutElement} from '../../../../common/services/data-manager.service';
 import {pluck} from 'rxjs/operators/pluck';
 import {tap} from 'rxjs/operators/tap';
+import {merge} from 'rxjs/observable/merge';
+import {map} from 'rxjs/operators/map';
+
 
 
 export const stylesMap ={
@@ -58,6 +62,14 @@ letterSpacing:{
 lineHeight:{
   	title:'lineHeight',
   	units:''
+},
+textDecoration:{
+    title:'textDecoration',
+    units:''
+},
+zIndex:{
+    title:'zIndex',
+    units:''
 }
 };
 
@@ -73,6 +85,10 @@ documentStylesForm:FormGroup;
 @Input() currentData:any=null;
 fontFamilyOptions:any;
 fontSizeOptions:any;
+textDecorOptions:any;
+currentStyles:any={};
+massSelectionActive:boolean = false;
+groupingAllowed:boolean = false;
 @ViewChild('color_picker') color_picker:ViewContainerRef;
 
 @HostBinding('class.panel_visible')
@@ -90,29 +106,50 @@ _visible:boolean = false;
   	}
   	this.fontFamilyOptions = fontFamily;
   	this.fontSizeOptions = fontSize;
+    this.textDecorOptions=textDecor;
   	this.createForm();
-  		this.contentService.selectedElement.subscribe((element)=>{
-  		if(element){
-  			this._visible = true;
-  			let data = this.extractDataFromElement(element);
-  			this.updateForm(data);
+    let massSelection = this.contentService.selection;
+    let singleSelection = this.contentService.selectedElement;
+  		let selectionSub = merge(massSelection,singleSelection).pipe(map((val)=>{
+        if((val instanceof Array) && val.length<1){
+          return null;
+        }
+        return val;
+      })).subscribe((incomingData)=>{
+  		if(incomingData){
+  			
+  			let data={};
+        this.massSelectionActive=false;
+        this.groupingAllowed = false;
+        if(incomingData instanceof Array){
+         this.massSelectionActive=true;
+           if(incomingData.length < 1) return;
+           this._visible = true;
+           this.groupingAllowed = incomingData.every((el)=>!el.className.includes('svg-element'));
+        }else{
+            this._visible = true;
+            data = this.extractDataFromElement(incomingData);
+            this.updateForm(data);
+        }
+  			
   			this.cdr.markForCheck();
   		}else{
   			this._visible = false;
   			this.color_picker['closeDd']();
   			this.assignDefaultopts();
   			this.updateForm(this.currentData);
+        this.cdr.markForCheck();
   		}
-  		
   	})
+
   	this.documentStylesForm.valueChanges.subscribe((value)=>{
   		 if(value){
      		this.currentData = {...value};
-     		this.applyStylesToElement(value);
+     		this.applyStyles(value);
      		this.cdr.markForCheck();
+
   		 }
   	})
-  
   }
 
 ngAfterViewInit(){
@@ -130,7 +167,9 @@ this.cdr.detectChanges();
   		textAlign:'left',
   		textUppercase:'',
   		letterSpacing:0,
-  		lineHeight:1.5
+  		lineHeight:1.5,
+      textDecoration:'none',
+      zIndex:'1'
   	}
   }
 
@@ -144,7 +183,9 @@ this.cdr.detectChanges();
   		textAlign:[this.currentData.textAlign],
   		textUppercase:[this.currentData.textUppercase],
   		letterSpacing:[this.currentData.letterSpacing],
-  		lineHeight:[this.currentData.lineHeight]
+  		lineHeight:[this.currentData.lineHeight],
+      textDecoration:[this.currentData.textDecoration],
+      zIndex:[this.currentData.zIndex]
   	});
   }
 
@@ -160,6 +201,8 @@ this.cdr.detectChanges();
   	data.textUppercase = el.style.textTransform == 'uppercase';
   	data.letterSpacing = el.style.letterSpacing;
   	data.lineHeight = el.style.lineHeight || 1.5;
+    data.textDecoration=el.style.textDecoration || 'none';
+    data.zIndex = el.style.zIndex || '1';
   	return data;
   }
 
@@ -167,13 +210,31 @@ this.cdr.detectChanges();
   	this.documentStylesForm.patchValue(data);
   }
 
-  applyStylesToElement(styles:any):void{
-  	let el = this.contentService.getSelectedElementVal(false);
-  	if(el && styles){
+  applyStyles(styles:any):void{
+    let selected;
+    if(this.massSelectionActive){
+      selected = this.contentService.getSelectedElementVal(true);
+    }else{
+      selected = this.contentService.getSelectedElementVal(false);
+    }
+  	
+  	if(selected && styles){
+
+
   		styles = this.mapStyleValues(styles);
+
+      this.currentStyles = Object.assign({},styles);
+
   		for(var key in styles){
   			let styleVal = styles[key];
-  			el.style[key]=styleVal;
+        if(selected instanceof Array){
+          selected.forEach((el)=>{
+            el.style[key]=styleVal;
+          })
+        }else{
+          selected.style[key]=styleVal;
+        }
+  			
   		}
   	}
   }
@@ -201,9 +262,86 @@ this.cdr.detectChanges();
 
   copySelectedEl():void{
   		let el = this.contentService.getSelectedElementVal(false);
+      while(!this.doesIdInclude(el.id,'asset')){
+           el=el.parentElement;
+         }
   		let idx = el.id.split('-')[1];
 	  	if(idx){
-	  		this.dataManagerService.copyAndInsertAssetInLayout(idx);
+        let properties:ILayoutElement = new ILayoutElement();
+        this.getChildrenData(el,properties);
+       console.log(properties);
+        properties.mainStyles = this.getElementStyles(el);
+        properties.mainStyles['width']=  el.style.width;
+         properties.mainStyles['height']=  el.style.height;
+       
+	  		this.dataManagerService.copyAndInsertAssetInLayout(idx,'default',properties);
 	  	}
+  }
+
+
+  groupSelectedEls(){
+    if(this.groupingAllowed){
+       let elements = this.contentService.getSelectedElementVal(true);
+       let groupedElement:ILayoutElement = new ILayoutElement();
+       let currentWrapperPosition = this.contentService.getSelectionWrapperPosition();
+       groupedElement.attrs['x']=currentWrapperPosition.left;
+       groupedElement.attrs['y']=currentWrapperPosition.top;
+       groupedElement.mainStyles={
+         'width':currentWrapperPosition.width+'px',
+         'height':currentWrapperPosition.height+'px'
+       }
+       if(elements){
+         elements = elements.filter((el)=>this.doesIdInclude(el.id,'asset'));
+         elements.forEach((element,idx)=>{
+           let el = new ILayoutElement();
+         
+            let dims:ClientRect = element.getBoundingClientRect();
+
+           
+         })
+       }
+    }
+   
+  }
+
+  doesIdInclude(id:string,searchItem:string){
+    return id.includes(searchItem);
+  }
+
+
+  getChildrenData(el,properties){
+          if(el.children.length>0){
+           let parentContent = el.querySelector('.single-parent-content');
+           if(parentContent){
+             properties.content = parentContent.textContent;
+           }
+           [].forEach.call(el.children,(child,idx)=>{
+             if(this.doesIdInclude(child.id,'inner')){
+               if(child.textContent && child.textContent.length){
+                  properties.innerAssets[idx] = new ILayoutElement();
+                  properties.innerAssets[idx].mainStyles=this.getElementStyles(child);
+                  if(child.children && child.children.length > 0){
+                    this.getChildrenData(child,properties.innerAssets[idx]);
+                  }
+                  properties.innerAssets[idx].content=child.textContent;
+               }
+             }
+           })
+         }
+         return properties;
+  }
+
+
+  getElementStyles(el){
+
+    let stylesObj={};
+    let elStyles = el.style;
+    for(var key in stylesMap){
+      if(elStyles[stylesMap[key].title]){
+        stylesObj[key]=elStyles[stylesMap[key].title];
+      }
+    }
+    console.log(stylesObj);
+    return stylesObj;
   }
 }

@@ -30,7 +30,7 @@
     }
 
 
-	.text-config-list{
+	.config-list{
 	top:50%;
 	list-style:none;
 	position:relative;
@@ -75,4 +75,29 @@
 	}
 
 	}
+   .actions-list{
+  display:inline-flex;
+  flex-direction:row;
+  top:50%;
+  right:35%;
+  list-style:none;
+  position:absolute;
+  transform:translateY(-50%);
+  align-items:center;
+
+  &-item{
+    cursor:pointer;
+    margin-right:.65em;
+
+    .fa{
+    font-size:1.3em;
+    transition:all .2s ease-in-out;
+    color:rgba(0,0,0,.6);
+    vertical-align:bottom;
+    &:hover{
+    color:rgba(0,0,0,.9);
+    }
+    }
+  }
+}
   }

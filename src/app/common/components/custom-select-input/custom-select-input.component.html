@@ -10,7 +10,7 @@
 	        <div class="right-line"></div>
    		 </div>
  
-        <button class="dropdown-item" *ngFor="let item of selectList" [ngStyle]="{'font-family':font ? item.name : ''}" (click)="updateValue(item.id)">{{item.name}}<i class="fa" [class.fa-check]="value.id == item.id"></i></button>
+        <button class="dropdown-item" *ngFor="let item of selectList" [ngStyle]="{'font-family':font ? item.name : ''}" (click)="updateValue(item.id)">{{item.name}}<i class="fa" [class.fa-check]="item.name == value"></i></button>
     </div>
       </div>
     </div>

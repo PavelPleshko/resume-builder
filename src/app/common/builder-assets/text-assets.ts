@@ -27,7 +27,7 @@ export const additionalTextElements:ILayoutElement[]=[
 ]},
 {id:4,attrs:{x:100,y:100},element:'div',mainStyles:{'color':'#000000','font-size':'16px','width':'200px','height':'70px','text-align':'center','display':'flex','flex-flow':'column nowrap'},innerAssets:[
 {attrs:{},element:'span',content:'Heading',mainStyles:{'font-size':'28px','z-index':'1','font-weight':'bold'}},
-{attrs:{},element:'span',content:'Subheading',mainStyles:{'font-size':'21px','z-index':'2'}},
+{attrs:{},element:'span',content:'Subheading',mainStyles:{'font-size':'21px','z-index':'2'}}
 ]},
 {id:5,attrs:{x:100,y:100},element:'div',mainStyles:{'color':'#000000','width':'150px','height':'50px','white-space':'nowrap','display':'flex','flex-flow':'row wrap','align-items':'center','justify-content':'space-between'},innerAssets:[
 

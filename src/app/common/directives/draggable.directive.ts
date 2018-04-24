@@ -1,4 +1,4 @@
-import {Directive,OnInit,ElementRef,Input,ViewContainerRef} from '@angular/core';
+import {Directive,OnInit,ElementRef,Input,ViewContainerRef,ChangeDetectorRef} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {fromEvent} from 'rxjs/observable/fromEvent';
 import {switchMap,takeUntil,tap,throttleTime,debounceTime} from 'rxjs/operators';
@@ -14,7 +14,7 @@ export class Draggable implements OnInit{
 	_allowDrag:boolean = true;
 	md:boolean;
 	
-	constructor(public element:ElementRef,private viewRef:ViewContainerRef){
+	constructor(public element:ElementRef,private cdr:ChangeDetectorRef,private viewRef?:ViewContainerRef){
 
 	}
 
@@ -56,6 +56,12 @@ mouseMoveHandler(event){
 	if(this.md && this._allowDrag){
 			this.element.nativeElement.style.top = (event.clientY - this.topStart) + 'px';
 			this.element.nativeElement.style.left = (event.clientX - this.leftStart) + 'px';
+				if(this.viewRef['_data'].componentView && 
+				this.viewRef['_data'].componentView.component.update){
+				
+				this.viewRef['_data'].componentView.component.update();
+			}
+			
 		}
 }
 

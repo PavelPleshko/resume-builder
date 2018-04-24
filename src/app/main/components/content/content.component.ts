@@ -1,7 +1,9 @@
 import { Component, OnInit,ElementRef,Renderer2,ChangeDetectorRef} from '@angular/core';
 import {DataManagerService} from '../../../common/services/data-manager.service';
 import {ContentService} from '../../../common/services/content.service';
-import {pluck,distinctUntilChanged,switchMap,takeUntil,tap,filter,throttleTime} from 'rxjs/operators';
+import {pluck,distinctUntilChanged,
+  switchMap,takeUntil,tap,filter,throttleTime} from 'rxjs/operators';
+import {Subscription} from 'rxjs/Subscription';
 import {ILayout} from '../../../common/services/data-manager.service';
 import {fromEvent} from 'rxjs/observable/fromEvent';
 import {Observable} from 'rxjs/Observable';
@@ -9,7 +11,7 @@ import {Observable} from 'rxjs/Observable';
 @Component({
   selector: 'app-content',
   templateUrl: './content.component.html',
-  styleUrls: ['./content.component.scss']
+  styleUrls: ['./content.component.scss'],
 })
 export class ContentComponent implements OnInit {
 layout:any;
@@ -23,11 +25,16 @@ contentCanvas:any;
   elStyle:any;
   selection:HTMLElement[]=[];
   selectedSvg:Observable<any>;
+  initializeMassSelectionController:boolean = false;
+  massSelectorContainer:any;
+  selectionSubscription:Subscription;
+  massSelectorPosition:any;
+  prevMassSelectorPosition:any;
 
   constructor(private dataManager:DataManagerService,
     private contentService:ContentService,
-    private el:ElementRef,private renderer:Renderer2,
-    private cdr:ChangeDetectorRef) { }
+    private el:ElementRef,private renderer:Renderer2,private cdr:ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
   	this.dataManager.data.pipe(pluck('activeLayout')).subscribe(layout=>{
@@ -41,13 +48,18 @@ contentCanvas:any;
   }
 
   startListening(){
-  	let mouseup = fromEvent(document,'mouseup').pipe(tap(_=>this.destroyRect()));
-  	let mousemove = fromEvent(document,'mousemove').pipe(throttleTime(30),takeUntil(mouseup),tap((e:MouseEvent)=>this.resizeRect(e)),throttleTime(700),
+  	let mouseup = fromEvent(document,'mouseup').pipe(tap(_=>{
+      this.destroyRect();
+      this.wrapElements();
+    }));
+
+  	let mousemove = fromEvent(document,'mousemove').pipe(throttleTime(30),takeUntil(mouseup),tap((e:MouseEvent)=>this.resizeRect(e)),throttleTime(300),
   		tap(()=>this.selectElements()));
 	let mousedown = fromEvent(this.el.nativeElement,'mousedown').pipe(filter((e:MouseEvent)=>{
 	return hasClass.call(e.target,'main-wrapper');
 	}),tap((e)=>{
     this.el.nativeElement.dispatchEvent(new Event('custom-blur'));
+     this.unwrapElements();
 		this.removeSelectedClass(this.selection);
 		this.selection = [];
 		this.createRect(e);
@@ -155,6 +167,76 @@ removeSelectedClass(arg){
   	this.renderer.removeChild(this.el.nativeElement,this.rect);
   	this.rect = undefined;
   }
+
+  wrapElements(){
+    let els = this.contentService.getSelectedElementVal(true);
+    if(els.length>0){
+      [].forEach.call(els,(el)=>{
+      this.renderer.setStyle(el,'pointer-events','none');
+    })
+       this.assignDimensionsToController(els);
+       this.selectionSubscription = this.contentService.selectedItemsWrapperPosition.subscribe((pos:any)=>{
+         if(pos){
+           let deltaTop=0,deltaLeft=0;
+           if(this.prevMassSelectorPosition){
+                deltaTop= pos.top - this.prevMassSelectorPosition.top;
+                deltaLeft=pos.left - this.prevMassSelectorPosition.left;
+           }  
+           if(deltaLeft != 0 || deltaTop != 0){
+                [].forEach.call(els,(el:any)=>{
+                    this.renderer.setStyle(el,'left',Number(el.style.left.replace('px',''))+deltaLeft+'px');
+                    this.renderer.setStyle(el,'top',Number(el.style.top.replace('px',''))+deltaTop+'px');
+                 })
+           }
+          this.prevMassSelectorPosition = pos;
+         }
+       }) 
+    }
+  }
+
+  unwrapElements(){   
+    if(this.selection.length){
+     [].forEach.call(this.selection,(el)=>{
+       this.renderer.setStyle(el,'pointer-events','');
+     })
+      this.initializeMassSelectionController=false;
+      this.prevMassSelectorPosition=null;
+      this.contentService.resetSelectionWrapperPosition();
+      this.selectionSubscription.unsubscribe();
+    }
+  }
+
+  assignDimensionsToController(elements){
+    let left=3000,top=5000,right=0,bottom=0,width=0,height=0;
+    [].forEach.call(elements,(el)=>{
+      let dims:ClientRect = el.getBoundingClientRect();
+      var data = {
+        left:Number(el.style.left.replace('px','')),
+        top:Number(el.style.top.replace('px','')),
+        bottom:undefined,
+        right:undefined
+      };
+      data.right =data.left + dims.width,
+      data.bottom = data.top + dims.height
+
+      if(data.left<left){
+        left=data.left;
+      }
+      if(data.right>right){
+        right = data.right;
+      }
+      if(data.top < top){
+         top = data.top;
+      }
+      if(data.bottom > bottom){
+        bottom=data.bottom;
+      }
+    })
+      this.initializeMassSelectionController=true;
+  this.massSelectorPosition = {left:left,top:top,width:right-left,height:bottom-top};
+  
+  }
+
 
 }
 

@@ -18,6 +18,7 @@ export class Streachable implements OnInit,AfterViewInit {
   elements:any=[];
   px=0;
   py=0;
+  els;
   stretcher:Function;
   @Input() stretchable:boolean;
 
@@ -32,6 +33,8 @@ export class Streachable implements OnInit,AfterViewInit {
       }
 
   ngAfterViewInit(){
+    this.els = this._element.nativeElement.querySelectorAll('.transformable');
+    
     this.cdr.detach();
   }
 
@@ -91,17 +94,18 @@ export class Streachable implements OnInit,AfterViewInit {
       this.stretcher=this[stretcherName];
     }),switchMap(()=>defer(()=>mouseMove))).subscribe();
     let mouseUp = fromEvent(document,'mouseup');
-    let mouseMove = fromEvent(document,'mousemove').pipe(takeUntil(mouseUp),tap((e)=>this.onMove(e)));
+    let mouseMove = fromEvent(document,'mousemove').pipe(takeUntil(mouseUp),throttleTime(100),tap((e)=>this.onMove(e)));
 this.listeners.push(mdown);
   }
 
   leftStretcher(offsetX: number, offsetY: number) {
    let viewBox = this._element.nativeElement.getAttribute('viewBox').split(' ');
    let width = Number(viewBox[2]) - offsetX;
-  
+ //  this.w = width;
+   this._element.nativeElement.setAttribute('viewBox',`0 0 ${width} ${viewBox[3]}`);
    this._element.nativeElement.parentElement.style.left = (Number( this._element.nativeElement.parentElement.style.left.replace('px','')) + offsetX)+'px';
     this._element.nativeElement.parentElement.style.width = (Number(this._element.nativeElement.parentElement.style.width.replace('px','')) - offsetX)+'px';
-   this._element.nativeElement.setAttribute('viewBox',`0 0 ${width} ${viewBox[3]}`);
+  
   }
 
   rightStretcher(offsetX: number, offsetY: number) {
@@ -135,11 +139,52 @@ this.listeners.push(mdown);
   onMove(event: any) {
     let offsetX = event.clientX - this.px;
     let offsetY = event.clientY - this.py;
-    this.stretcher(offsetX, offsetY);  
+   
+    this.stretcher(offsetX, offsetY); 
+  // this.transformElements(offsetX);
     this.px = event.clientX;
     this.py = event.clientY;
   }
+w;
+x;
+bbox;
+  transformElements(amount){
+   
+    if(this.els){
+      [].forEach.call(this.els,el=>{
+       let regExp = /[-]?\d+(\.\d+)?/g;
+       let transform = el.getAttribute('transform').split(')');
+        let translate = transform[0].match(regExp);
+        let scale =transform[1].match(regExp);
+        let tX=Number(translate[0]);
+        let tY=Number(translate[1]);
+         let sX=Number(scale[0]);
+        let sY=Number(scale[1]);
+        if(!el.getAttribute('fixed')){
+          tX = tX-amount;
+        el.setAttribute('transform',`translate(${tX},${tY}) scale(${sX},${sY})`);
+        }else if(el.getAttribute('scalableX')){
 
+           
+      this.bbox = el.getBBox();
+      if(!this.x){
+        this.x=this.bbox.x;
+      }
+     tX=tX+amount;
+     let children = el.children;
+     [].forEach.call(children,(child)=>{
+       let width = child.getAttribute('width');
+       let newWidth = Number(width)-amount;
+       child.setAttribute('width',newWidth);
+     })
+    
+           el.setAttribute('transform',`translate(${tX},${tY}) scale(${sX},${sY})`);
+        }
+      
+      
+    })
+  }
+}
 
 
   destroyHandles(parent){

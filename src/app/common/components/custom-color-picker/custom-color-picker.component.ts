@@ -1,11 +1,13 @@
-import { Component, forwardRef,ChangeDetectionStrategy,Input,ViewChild,ChangeDetectorRef,Output,EventEmitter,OnInit } from '@angular/core';
+import { Component, forwardRef,ChangeDetectionStrategy,Input,ViewChild,ChangeDetectorRef,Output,EventEmitter,AfterViewInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {DomSanitizer,SafeStyle} from '@angular/platform-browser';
+
 const CUSTOM_SELECT_ACCESSOR = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => CustomColorPickerComponent),
   multi: true
 };
+
 @Component({
   selector: 'app-custom-color-picker',
   templateUrl: './custom-color-picker.component.html',
@@ -13,7 +15,7 @@ const CUSTOM_SELECT_ACCESSOR = {
   providers: [CUSTOM_SELECT_ACCESSOR],
   changeDetection:ChangeDetectionStrategy.OnPush
 })
-export class CustomColorPickerComponent implements ControlValueAccessor,OnInit {
+export class CustomColorPickerComponent implements ControlValueAccessor,AfterViewInit {
 @Input() label:string;
 @Input() sidePanel:boolean = false;
 @ViewChild('dropDown') dropDown;
@@ -37,13 +39,17 @@ registerOnChange(fn) {
 
   writeValue(value) {
     this.value = value;
+      this.currentColor.rgb = this.value;
     this.cdr.detectChanges();
 }
 
-ngOnInit(){
+ngAfterViewInit(){
+  console.log(this.value);
   if(this.value){
     this.currentColor.rgb = this.value;
-    this.cdr.markForCheck();
+    
+     this.onModelChange(this.value);
+    this.cdr.detectChanges();
   }
 }
 
@@ -63,6 +69,7 @@ pushColor(dropdownInstance){
     this.valueChanged.emit(this.currentColor);
     this.currentColor={};
   }
+  this.cdr.detectChanges();
 }
 
 closeDd(){

@@ -22,7 +22,7 @@ set selected(val:boolean){
 		}
 }
 _selected:any = false;
-
+initializedTransformClass:boolean=false;
 svgReference:any;
 children=[];
 
@@ -32,16 +32,46 @@ let pos = 'absolute';
 return pos;	
 }
 
-// @HostBinding('style.width') 
-// get width(){
-// return this.inner ? '' : this.element.pos.width+'px';	
-// }
+@HostBinding('attr.transform')
+get transformVal(){
+  let transform = this.element.transform;
+  if(transform){
+    let scale = transform.scale || '';
+    let translate = transform.translate || '';
+    if(!this.initializedTransformClass){
+       this.renderer.addClass(this.el.nativeElement,'transformable');
+       this.initializedTransformClass = true;
+    }
+   
+    return `${translate} ${scale}`;
+  }
+  
+}
 
+@HostBinding('attr.fixed')
+get fixed(){
+  let fixed = this.element.fixed;
+  return fixed;
+}
 
-// @HostBinding('style.height') 
-// get height(){
-// return this.inner ? '' : this.element.pos.height+'px';	
-// }
+@HostBinding('attr.scalableX')
+get scalableX(){
+  if(this.element.scalable){
+     let scale = this.element.scalable.x;
+      return scale;
+  }
+ 
+}
+
+@HostBinding('attr.scalableY')
+get scalableY(){
+  if(this.element.scalable){
+     let scale = this.element.scalable.y;
+      return scale;
+  }
+ 
+}
+
 
 
   constructor(private cdr:ChangeDetectorRef,private el:ElementRef,
@@ -59,6 +89,7 @@ return pos;
   }
 
   updatePosition(){
+    this.cdr.markForCheck();
   }
 
   setStyleAndAttributes(el,attrs){
@@ -85,11 +116,12 @@ return pos;
     	this.renderer.appendChild(parent,this.svgReference);
   	}else{
   		this.svgReference = parent;
+      this.setStyleAndAttributes(this.svgReference,child.attrs);
   	}
   	  	if(child.changable){
   		this.renderer.setAttribute(this.svgReference,'changable',child.changable);
   	}
-  	this.cdr.detectChanges();
+  	this.cdr.markForCheck();
   }
 
   setPosition(data,el){
