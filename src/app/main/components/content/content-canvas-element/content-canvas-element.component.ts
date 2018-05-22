@@ -25,9 +25,15 @@ blurListener:any;
 
 @HostBinding('style.position') 
 get positionType(){
-let pos = this.inner ? 'relative':'absolute';
+let pos = (this.inner && !this.element.grouped) ? 'relative':'absolute';
 return pos;	
 }
+
+@HostBinding('style.display') 
+get displayType(){
+return this.element.list ? '' : 'inline-block';	
+}
+
 
 _selected:boolean = false;
 _hovered:boolean = false;
@@ -74,20 +80,23 @@ onDoubleClick(evt){
 	    setTimeout(function() {
 	        self.selectRange(caretRange);
 	        evt.stopPropagation();
-	    }, 10);
-		
-		
+	    }, 10);		
 	    let contentElement = document.querySelector('app-content');
 	    this.blurListener = this.renderer2.listen(contentElement,'custom-blur',this.blurElement.bind(this));
 	}
 }
 
-
 ngOnInit(){
 	if(this.element){
 		this.el.nativeElement.style.left = this.inner ? '' :  this.element.attrs.x+'px';
 		this.el.nativeElement.style.top = this.inner ? '' :  this.element.attrs.y+'px';
-			this.createElement(this.el.nativeElement,this.element);
+		let translatable = this.inner ? 'false' : 'true';
+		this.renderer2.setAttribute(this.el.nativeElement,'translatable',translatable);
+		if(this.element.element == 'li'){
+			this.renderer2.setAttribute(this.el.nativeElement,'list-element','true');
+		}
+		if(this.element.groupedElements && this.element.groupedElements.length > 0) this.renderer2.setAttribute(this.el.nativeElement,'grouped','true');
+		this.createElement(this.el.nativeElement,this.element);
 	}
 	this.contentService.selectedElement.subscribe((element)=>{
 		if(element && element.id.includes('inner') && this.inner){
@@ -157,7 +166,7 @@ assignDimensions(){
 if(newElement.content){
 
 	  let text = this.renderer2.createText(newElement.content);
-	  if(!newElement.innerAssets && !this.inner){
+	  if((!newElement.innerAssets || newElement.innerAssets.length<1) && !this.inner){
 	  	this.renderer2.addClass(el,'single-parent-content');
 	  }
   this.renderer2.appendChild(el,text);

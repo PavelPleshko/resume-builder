@@ -18,7 +18,7 @@ currentActiveIndex:number = 1;
 
   ngOnInit() {
   	this.menuItems = [
-  		{title:'search',iconName:'fa fa-search',link:'search'},
+  		{title:'saved',iconName:'fa fa-save',link:'saved'},
   		{title:'layouts',iconName:'fa fa-columns',link:''},
   		{title:'elements',iconName:'fa fa-puzzle-piece',link:'elements'},
   		{title:'text',iconName:'fa fa-font',link:'text'},

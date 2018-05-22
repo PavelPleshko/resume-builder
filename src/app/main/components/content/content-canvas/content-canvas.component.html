@@ -1,5 +1,5 @@
 
-<div class="main-wrapper {{layout.backgroundClass}}" [style.width]="currentWidth+'px'" [style.height]="currentHeight+'px'" [ngStyle]="{'background-color':backgroundColor}">
+<div class="main-wrapper {{layout.backgroundClass}}" id="pdf" [style.width]="currentWidth+'px'" [style.height]="currentHeight+'px'" [ngStyle]="{'background-color':backgroundColor}">
 	<ng-container *ngIf="initializeMassControl">
 	<app-mass-selection-control [ng2-draggable]="initializeMassControl" [ngStyle]="{'left':massSelectorPosition.left+'px','top':massSelectorPosition.top+'px','width':massSelectorPosition.width+'px','height':massSelectorPosition.height+'px'}"></app-mass-selection-control>
 	</ng-container>

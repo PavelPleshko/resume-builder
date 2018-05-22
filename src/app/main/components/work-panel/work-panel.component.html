@@ -12,19 +12,22 @@
       <div ngbDropdownMenu aria-labelledby="file-dropdown">
         <h5 class="dropdown-title"><strong>{{documentTitle}}</strong></h5>
         <hr>
-        <button class="dropdown-item"><i class="fa fa-save mr-2"></i>Save changes</button>
-        <button class="dropdown-item"><i class="fa fa-arrow-up mr-2"></i>Export document</button>
+        <button class="dropdown-item" (click)="saveDocument()"><i class="fa fa-save mr-2"></i>Save changes</button>
+        <button class="dropdown-item" (click)="downloadPdf()"><i class="fa fa-arrow-up mr-2"></i>Export document</button>
       </div>
     </div>
   </div>
        
       </li>
       <li class="nav-item">
+        <button class="btn btn-outline-warning text-warning" (click)="createNew()">Create new</button>
+      </li>
+    <!--   <li class="nav-item">
         <a class="nav-link" href="#">Undo</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#">Redo</a>
-      </li>
+      </li> -->
       <li class="nav-item status-saved">
         <a class="nav-link text-muted">{{statusSaved}}</a>
       </li>
@@ -35,7 +38,7 @@
     		<input type="text" (click)="enterEditMode()" [(ngModel)]="documentTitle" (blur)="saveTitle(title.value)" #title name="documentTitle" id="documentTitle" [ngClass]="{'form-control-plaintext':!editMode,'form-control':editMode}">
     	</li>
     	<li class="panel-right-list-element">
-    		<button class="btn btn-success text-light">Download</button>
+    		<button class="btn btn-success text-light" (click)="downloadPdf()">Download</button>
     	</li>
     </ul>
 

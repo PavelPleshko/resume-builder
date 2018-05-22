@@ -11,19 +11,19 @@ export const defaultTextAssets:ILayoutElement[] =[
 
 export const additionalTextElements:ILayoutElement[]=[
 {id:1,attrs:{x:100,y:100},element:'ul',mainStyles:{'color':'#000000','font-size':'16px'},innerAssets:[
-{attrs:{},element:'li',content:'First list element',mainStyles:{'font-size':'inherit'}},
-{attrs:{},element:'li',content:'Second list element',mainStyles:{'font-size':'inherit'}},
-{attrs:{},element:'li',content:'Third list element',mainStyles:{'font-size':'inherit'}}
+{attrs:{},element:'li',list:true,content:'First list element',mainStyles:{'font-size':'inherit'}},
+{attrs:{},element:'li',list:true,content:'Second list element',mainStyles:{'font-size':'inherit'}},
+{attrs:{},element:'li',list:true,content:'Third list element',mainStyles:{'font-size':'inherit'}}
 ]},
 {id:2,attrs:{x:100,y:100},element:'ol',mainStyles:{'color':'#000000','list-style':'decimal','font-size':'16px'},innerAssets:[
-{attrs:{},element:'li',content:'First list element'},
-{attrs:{},element:'li',content:'Second list element'},
-{attrs:{},element:'li',content:'Third list element'}
+{attrs:{},element:'li',list:true,content:'First list element'},
+{attrs:{},element:'li',list:true,content:'Second list element'},
+{attrs:{},element:'li',list:true,content:'Third list element'}
 ]},
 {id:3,attrs:{x:100,y:100},element:'ul',mainStyles:{'color':'#000000','list-style':'square','font-size':'16px'},innerAssets:[
-{attrs:{},element:'li',content:'First list element'},
-{attrs:{},element:'li',content:'Second list element'},
-{attrs:{},element:'li',content:'Third list element'}
+{attrs:{},element:'li',list:true,content:'First list element'},
+{attrs:{},element:'li',list:true,content:'Second list element'},
+{attrs:{},element:'li',list:true,content:'Third list element'}
 ]},
 {id:4,attrs:{x:100,y:100},element:'div',mainStyles:{'color':'#000000','font-size':'16px','width':'200px','height':'70px','text-align':'center','display':'flex','flex-flow':'column nowrap'},innerAssets:[
 {attrs:{},element:'span',content:'Heading',mainStyles:{'font-size':'28px','z-index':'1','font-weight':'bold'}},

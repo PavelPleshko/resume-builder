@@ -112,9 +112,13 @@
 	</ul>
 
 	 <ul class="text-actions-list">
-      <li class="text-actions-list-item"  [class.disabled]="!massSelectionActive || !groupingAllowed">
+      <li *ngIf="!ungroupAllowed" class="text-actions-list-item"  [class.disabled]="!massSelectionActive || !groupingAllowed">
       	<span class="hoverable" (click)="groupSelectedEls()">Group</span>
       </li>
+      <li *ngIf="ungroupAllowed" class="text-actions-list-item">
+      	<span class="hoverable" (click)="ungroupSelectedEls()">Ungroup</span>
+      </li>
+      
       <li class="text-actions-list-item" [class.disabled]="massSelectionActive">
       	<span class="hoverable" (click)="copySelectedEl()">Copy</span>
       </li>

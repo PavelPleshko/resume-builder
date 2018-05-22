@@ -58,12 +58,14 @@ _visible:boolean = false;
   			if(value.length){
   				this.applyColors(value,this.currentSvgs);
   				this.cdr.detectChanges();
+  				this.dataManager.changeSavedStatus(true);
   			}	
   		})
   			this.svgForm.valueChanges.subscribe((value)=>{
   			if(value){
   				this.applyStylesToSelectedEl(value);
   				this.cdr.detectChanges();
+  				this.dataManager.changeSavedStatus(true);
   			}	
   		})
 			
@@ -111,7 +113,6 @@ _visible:boolean = false;
   }
 
   applyStylesToSelectedEl(styles){
-  	console.log(styles);
   	let selectedSvg = document.querySelector('.selected');
   	if(selectedSvg){
   		console.log(selectedSvg);

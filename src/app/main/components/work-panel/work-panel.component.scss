@@ -1,6 +1,12 @@
 .navbar{
 	background-color:#31343a;
-
+	
+.btn-outline-warning{
+	text-transform:uppercase;
+	&:hover{
+	color:#fff !important;
+	}
+	}
 	.dropdown{
 
 	&-item{
@@ -9,6 +15,8 @@
 	color:#fff;
 	background-color:#31343a;
 	}
+
+
 	}
 	.dropdown-menu{
 	top:46px !important;
@@ -61,4 +69,6 @@
 	}
 
 	}
+
+
 }

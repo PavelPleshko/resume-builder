@@ -13,8 +13,8 @@ export class ContentCanvasComponent implements OnInit,OnChanges {
 @Input() initializeMassControl:boolean=false;
 
 currentRatio=1;
-currentWidth:number = 816;
-currentHeight:number = 1055;
+currentWidth:number = 794;
+currentHeight:number = 1123;
 activeSvg;
 
 get backgroundColor(){

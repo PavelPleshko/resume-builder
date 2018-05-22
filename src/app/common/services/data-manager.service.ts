@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {mergeObject} from '../helpers/functions';
 
+
+export type TStatus = 'Unsaved changes' | 'All changes saved';
+
 export interface ILayoutSvgElement{
 	id?:number;
 	type?:string;
@@ -29,6 +32,9 @@ export class ILayoutElement{
 	innerAssets?:ILayoutElement[]=[];
 	mainStyles?:object={};
 	extraStyles?:object={};
+	groupedElements?:Array<any>=[];
+	grouped?:boolean = false;
+	list?:boolean=false;
 }
 
 export class ILayout{
@@ -46,7 +52,8 @@ export interface AppState{
 	documentTitle:string,
 	layouts:ILayout[],
 	activeLayout:ILayout,
-	activeSetOfElements:any[]
+	activeSetOfElements:any[],
+	statusSaved:TStatus
 }
 
 
@@ -60,7 +67,8 @@ currentIds:any=[];
   		documentTitle:'Untitled',
   		layouts:this.getLayouts(),
   		activeLayout:new ILayout(),
-  		activeSetOfElements:[]
+  		activeSetOfElements:[],
+  		statusSaved:'All changes saved'
   	}
 	this.data = new BehaviorSubject<AppState>(data);
   }
@@ -70,6 +78,7 @@ updateTitle(newTitle){
 let data = this.data.getValue();
 let newData:AppState= {...data,documentTitle:newTitle};
 this.data.next(newData);
+this.changeSavedStatus(true);
 }
 
 chooseLayout(id:string){
@@ -77,13 +86,62 @@ chooseLayout(id:string){
 	let chosenLayout = this.getLayouts().filter(layout=>layout.id == id)[0];
 	let newData:AppState= {...data,activeLayout:chosenLayout};
 	this.data.next(newData);
+	this.changeSavedStatus(true);
+}
+
+createNewDocument(){
+let data = this.data.getValue();
+let layout = new ILayout();
+let newData:AppState = {...data,activeLayout:layout};
+this.data.next(newData);
+this.changeSavedStatus(true);
+}
+
+saveCurrentDocument(){
+	return new Promise((resolve,reject)=>{
+		let currentDoc:AppState = this.data.getValue();
+		let dbKey = 'savedDocsResumeBuilder';
+		let key = `${currentDoc.documentTitle}-${currentDoc.activeLayout.id}`;
+		let item = JSON.stringify(currentDoc);
+		let items = window.localStorage.getItem(dbKey);
+			
+
+		if(items){
+		let list = JSON.parse(items);
+			let found = list.findIndex((doc)=>{
+				return doc.id == currentDoc.activeLayout.id && doc.title == currentDoc.activeLayout.title;
+			});
+			if(found>=0){
+				list.splice(found,1,currentDoc.activeLayout);
+			}else{
+				list.push(currentDoc.activeLayout);
+			}
+			list = JSON.stringify(list);
+			window.localStorage.setItem(dbKey,list);
+		}else{
+			let element = JSON.stringify([currentDoc.activeLayout]);
+			window.localStorage.setItem(dbKey,element);
+		}
+		
+		resolve(currentDoc.documentTitle);
+	});	
+}
+
+changeSavedStatus(isChanged:boolean){
+	let data = this.data.getValue();
+	let status:TStatus;
+if(isChanged){
+ status = 'Unsaved changes';
+}else{
+	status='All changes saved';
+}
+let newData:AppState = {...data,statusSaved:status};
+this.data.next(newData);
 }
 
 getLayouts():ILayout[]{
 	return [
-	{id:'1',title:'centered',background:'#ffffff',image:'/assets/layouts/centered.svg',assets:[]},
-
-	{id:'2',title:'bold',background:'#ffffff',image:'/assets/layouts/bold.svg',svgAssets:[],assets:[
+	{id:'1',title:'bold',background:'#ffffff',image:'/assets/layouts/bold.svg',svgAssets:[],assets:[
 
 	{id:1,attrs:{x:81,y:34},element:'span',mainStyles:{'font-size':'36px','color':'#009191','font-family':'Roboto Condensed,sans-serif','text-transform':'uppercase'},
 	content:'Jessica '},
@@ -96,8 +154,8 @@ getLayouts():ILayout[]{
 	{id:6,attrs:{x:520,y:55},element:'span',content:'123 Main Street, San Francisco, CA 94122 ',mainStyles:{'color':'#6c6e70','font-size':'13px','font-family':'Roboto Condensed,sans-serif'}},
 	{id:7,attrs:{x:613,y:75},element:'span',content:'jessica.claire@live.com ',mainStyles:{'color':'#00ACEC','font-size':'13px','font-family':'Roboto Condensed,sans-serif'}},
 		
-		{id:8,attrs:{x:83,y:110},mainStyles:{background:'#000000',width:'650px','min-height':'1px'},element:'div',
-		innerAssets:[{attrs:{},mainStyles:{background:'#000000',width:'100%','height':'100%'},element:'div'}]},
+		{id:8,attrs:{x:83,y:110},mainStyles:{background:'#000000',width:'650px','min-height':'3px'},element:'div'
+		},
 
 	{id:9,attrs:{x:81,y:125},mainStyles:{'color':'#b7b7b7','font-size':'16px','font-weight':'bold','font-family':'Roboto Condensed,sans-serif','text-transform':'uppercase'},element:'span',content:'Professional'},
 	{id:10,attrs:{x:81,y:149},mainStyles:{'color':'#b7b7b7','font-size':'16px','font-weight':'bold','font-family':'Roboto Condensed,sans-serif','text-transform':'uppercase'},element:'span',content:'Summary'},
@@ -161,9 +219,6 @@ getLayouts():ILayout[]{
 		{id:38,attrs:{x:344,y:779},element:'span',mainStyles:{'font-size':'13px','font-family':'Roboto Condensed,sans-serif'},content:'2009'},
 		{id:39,attrs:{x:228,y:799},element:'span',mainStyles:{'font-size':'13px','font-family':'Roboto Condensed,sans-serif'},content:'Coursework include: Speech and Communication, Sociology and Psychology'},
 	]},
-
-	{id:'3',title:'charismatic',background:'#ffffff',image:'/assets/layouts/charismatic.svg',assets:[]},
-	{id:'4',title:'professional',background:'#ffffff',image:'/assets/layouts/professional.svg',assets:[]}
 	];
 }
 
@@ -176,6 +231,7 @@ deleteAssetFromLayout(index:any,svg?:boolean):void{
 	this.currentIds = this.currentIds.filter((id)=>id != index);
 	let newData:AppState= {...data,activeLayout:{...activeLayout,[assets]:newAssets}};
 	this.data.next(newData);
+	this.changeSavedStatus(true);
 }
 
 copyAndInsertAssetInLayout(index:any,type:string,properties?:any):void{
@@ -191,16 +247,16 @@ copyAndInsertAssetInLayout(index:any,type:string,properties?:any):void{
 	if(assetToCopy){
 		newAsset = copy(assetToCopy);
 		if(properties){
-			newAsset = this.mergeRecursive(newAsset,properties);
-			
+			newAsset = this.mergeRecursive(newAsset,properties);		
 		}
-		console.log(properties,newAsset);
+		
 		newAsset.id = this.generateUI(this.currentIds);
 		newAsset[attrs]['x'] =Number(newAsset[attrs]['x'])+10;
 		newAsset[attrs]['y'] =Number(newAsset[attrs]['y'])+10;
 		activeLayout[assets] = [...activeLayout[assets],newAsset];
 		let newData:AppState= {...data,activeLayout:activeLayout};
 		this.data.next(newData);
+		this.changeSavedStatus(true);
 	}else{
 		return;
 	}
@@ -211,17 +267,16 @@ mergeRecursive(mainObj,props?){
 	let newObj:any = {};
 	if(props){
 		newObj = mergeObject(mainObj,props,null);
+		if(mainObj.innerAssets && mainObj.innerAssets.length){
+		mainObj.innerAssets.forEach((asset,idx)=>{
+			newObj.innerAssets[idx]=this.mergeRecursive(asset,props.innerAssets[idx]);
+		})
+	}
 	}else{
 		newObj = mainObj;
 	}
 	
-	if(mainObj.innerAssets && mainObj.innerAssets.length){
-		mainObj.innerAssets.forEach((asset,idx)=>{
-			newObj.innerAssets[idx]=this.mergeRecursive(asset);
-		})
-	}else{
-
-	}
+	
 	return newObj;
 }
 
@@ -233,6 +288,7 @@ let propertyToChange = isGradient ? 'backgroundClass' : 'background';
 activeLayout[propertyToChange] = value;
 let newData:AppState= {...data,activeLayout:activeLayout};
 		this.data.next(newData);
+		this.changeSavedStatus(true);
 }
 
 resetBackground(layout:ILayout){
@@ -240,7 +296,7 @@ layout.background='';
 layout.backgroundClass='';
 }
 
-addNewElement(element:ILayoutElement,type?:string){
+addNewElement(element:ILayoutElement,type?:string,grouping?:boolean){
 	let property;
 	if(!type || type == 'standard'){
 		property = 'assets';
@@ -254,6 +310,10 @@ element.id=this.generateUI(this.currentIds);
 let newAssets = assets.concat(element)
 		let newData:AppState= {...data,activeLayout:{...activeLayout,[property]:newAssets}};
 		this.data.next(newData);
+		if(!grouping){
+			this.changeSavedStatus(true);
+		}
+		
 }
 
 changeActiveSetOfElements(els){
@@ -262,7 +322,40 @@ changeActiveSetOfElements(els){
 	this.data.next(newData);
 }
 
+groupElements(groupedElement,assetsToDelete){
+	let data = this.data.getValue();
+	let activeLayout = data.activeLayout;
 
+	assetsToDelete.forEach(id=>{
+		activeLayout.assets = activeLayout.assets.filter((asset)=>asset.id != id);
+	})
+	this.addNewElement(groupedElement,'standard',true);
+	this.changeSavedStatus(true);
+}
+
+
+ungroupElements(asset:ILayoutElement){
+if(asset && asset.groupedElements){
+	this.deleteAssetFromLayout(asset.id,false);
+	let elementsToAdd = asset.groupedElements;
+
+	elementsToAdd.forEach(element=>{
+		this.addNewElement(element,'standard',true);
+	})
+	this.changeSavedStatus(true);
+}
+}
+
+
+findElementInArray(array,elId){
+	return array.filter((asset)=>asset.id==elId)[0]
+}
+
+findAsset(id){
+	let assets = this.data.getValue().activeLayout.assets;
+	let asset = this.findElementInArray(assets,id);
+	return asset;
+}
 
 generateUI(currentIds){
   var text = "",
@@ -275,7 +368,6 @@ generateUI(currentIds){
   for( var j=0; j < 3; j++ ){
     text += possibleNums.charAt(Math.floor(Math.random() * 10));
   }
-  console.log(text);
 return currentIds.indexOf(text)<0 ? (currentIds.push(text),text) : this.generateUI(currentIds);
 }
 }

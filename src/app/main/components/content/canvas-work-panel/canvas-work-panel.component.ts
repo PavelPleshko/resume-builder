@@ -89,6 +89,7 @@ textDecorOptions:any;
 currentStyles:any={};
 massSelectionActive:boolean = false;
 groupingAllowed:boolean = false;
+ungroupAllowed:boolean = false;
 @ViewChild('color_picker') color_picker:ViewContainerRef;
 
 @HostBinding('class.panel_visible')
@@ -121,13 +122,19 @@ _visible:boolean = false;
   			let data={};
         this.massSelectionActive=false;
         this.groupingAllowed = false;
+        this.ungroupAllowed = false;
         if(incomingData instanceof Array){
          this.massSelectionActive=true;
            if(incomingData.length < 1) return;
            this._visible = true;
-           this.groupingAllowed = incomingData.every((el)=>!el.className.includes('svg-element'));
+           this.groupingAllowed = incomingData.every((el)=>!el.className.includes('svg-element') && el.getAttribute('grouped') != 'true');
+           if(incomingData.length == 1){
+              this.ungroupAllowed = this.checkIfGrouped(incomingData[0]);
+           }
+          
         }else{
             this._visible = true;
+             this.ungroupAllowed = this.checkIfGrouped(incomingData);
             data = this.extractDataFromElement(incomingData);
             this.updateForm(data);
         }
@@ -156,6 +163,19 @@ ngAfterViewInit(){
 this.cdr.detectChanges();
 }
 
+
+checkIfGrouped(element){
+  let grouped = false;
+  let id  = element.id.split('-')[1];
+ if(id){
+    let asset = this.dataManagerService.findAsset(id);
+    if(asset && asset.groupedElements){
+      grouped = asset.groupedElements.length;
+    }
+ }
+ grouped = !!(grouped);
+ return grouped;
+}
 
   assignDefaultopts(){
   	this.currentData = {
@@ -208,6 +228,7 @@ this.cdr.detectChanges();
 
   updateForm(data){
   	this.documentStylesForm.patchValue(data);
+    this.dataManagerService.changeSavedStatus(true);
   }
 
   applyStyles(styles:any):void{
@@ -269,7 +290,6 @@ this.cdr.detectChanges();
 	  	if(idx){
         let properties:ILayoutElement = new ILayoutElement();
         this.getChildrenData(el,properties);
-       console.log(properties);
         properties.mainStyles = this.getElementStyles(el);
         properties.mainStyles['width']=  el.style.width;
          properties.mainStyles['height']=  el.style.height;
@@ -284,24 +304,56 @@ this.cdr.detectChanges();
        let elements = this.contentService.getSelectedElementVal(true);
        let groupedElement:ILayoutElement = new ILayoutElement();
        let currentWrapperPosition = this.contentService.getSelectionWrapperPosition();
-       groupedElement.attrs['x']=currentWrapperPosition.left;
-       groupedElement.attrs['y']=currentWrapperPosition.top;
+       groupedElement.attrs['x']=currentWrapperPosition.leftRelative;
+       groupedElement.attrs['y']=currentWrapperPosition.topRelative;
        groupedElement.mainStyles={
          'width':currentWrapperPosition.width+'px',
          'height':currentWrapperPosition.height+'px'
        }
        if(elements){
+        let assetsToDelete:string[]=[];
          elements = elements.filter((el)=>this.doesIdInclude(el.id,'asset'));
          elements.forEach((element,idx)=>{
            let el = new ILayoutElement();
-         
+          assetsToDelete.push(element.id.split('-')[1]);
             let dims:ClientRect = element.getBoundingClientRect();
 
+            groupedElement.groupedElements[idx] = groupedElement.innerAssets[idx] = this.getChildrenData(element,el,groupedElement);
+            groupedElement.innerAssets[idx].grouped = true
            
          })
+         this.dataManagerService.groupElements(groupedElement,assetsToDelete);
+         this.ungroupAllowed=true;
        }
     }
    
+  }
+
+  ungroupSelectedEls(){
+    let selected = this.contentService.getSelectedElementVal(false);
+    let id:any;
+    if(selected){
+      id = selected.id.split('-')[1];
+      let asset = this.dataManagerService.findAsset(id);
+      if(asset){
+        asset.groupedElements.forEach(el=>{
+           let assetPos = {x:null,y:null};
+           let assetTranslationInfo = el.mainStyles['transform'];
+        assetTranslationInfo = assetTranslationInfo.split(')');
+        assetPos.x = Number(assetTranslationInfo[0].match(/[0-9]+/g))+Number(asset.attrs.x);
+        assetPos.y = Number(assetTranslationInfo[1].match(/[0-9]+/g))+Number(asset.attrs.y);
+        el.mainStyles['pointer-events']='';
+        el.grouped = false;
+        delete el.mainStyles['transform'];
+        el.attrs = assetPos;
+        })
+       
+
+       
+        this.dataManagerService.ungroupElements(asset);
+        this.ungroupAllowed = false;
+      }
+    }
   }
 
   doesIdInclude(id:string,searchItem:string){
@@ -309,21 +361,31 @@ this.cdr.detectChanges();
   }
 
 
-  getChildrenData(el,properties){
-          if(el.children.length>0){
+  getChildrenData(el,properties,groupedEl?){
+          if(el.children && el.children.length>0){
            let parentContent = el.querySelector('.single-parent-content');
            if(parentContent){
              properties.content = parentContent.textContent;
+             if(parentContent.tagName){
+                 properties.element = parentContent.tagName.toLowerCase();
+             }
+             properties.mainStyles = this.getElementStyles(parentContent.parentElement,groupedEl);
+           }else{
+             properties.mainStyles = this.getElementStyles(el,groupedEl);
            }
            [].forEach.call(el.children,(child,idx)=>{
              if(this.doesIdInclude(child.id,'inner')){
                if(child.textContent && child.textContent.length){
                   properties.innerAssets[idx] = new ILayoutElement();
-                  properties.innerAssets[idx].mainStyles=this.getElementStyles(child);
-                  if(child.children && child.children.length > 0){
-                    this.getChildrenData(child,properties.innerAssets[idx]);
-                  }
+                  properties.innerAssets[idx].mainStyles=this.getElementStyles(child,groupedEl);
+                  properties.innerAssets[idx].element = child.getAttribute('list-element') == 'true' ? 'li' : child.tagName.toLowerCase();
+
+                  properties.innerAssets[idx].list = child.getAttribute('list-element') == 'true' ? true : false;
                   properties.innerAssets[idx].content=child.textContent;
+                  if(child.children && child.children.length > 0){
+                    this.getChildrenData(child,properties.innerAssets[idx],groupedEl);
+                  }
+                  
                }
              }
            })
@@ -331,17 +393,28 @@ this.cdr.detectChanges();
          return properties;
   }
 
-
-  getElementStyles(el){
-
+  getElementStyles(el,groupedEl?){
     let stylesObj={};
     let elStyles = el.style;
-    for(var key in stylesMap){
-      if(elStyles[stylesMap[key].title]){
-        stylesObj[key]=elStyles[stylesMap[key].title];
+    for(var key in elStyles){
+      if(elStyles[key] && elStyles[key].length>0 && key !='length' && key != 'top' && key != 'left' && key != 'cssText'){
+        stylesObj[key]=elStyles[key];
       }
     }
-    console.log(stylesObj);
+    if(groupedEl){
+      let left = groupedEl.attrs['x'];
+      let top = groupedEl.attrs['y'];
+      let elDims:ClientRect = el.getBoundingClientRect();
+      let parElDims:ClientRect = el.parentElement.getBoundingClientRect();
+      let translate,trX,trY;
+    
+      if(el.tagName != 'LI' && el.getAttribute('translatable') == 'true'){
+         trX= (elDims.left-parElDims.left)-left;
+         trY= (elDims.top-parElDims.top)-top;
+         translate = `translateX(${trX}px) translateY(${trY}px)`;
+         stylesObj['transform'] = translate;
+      }
+    }
     return stylesObj;
   }
 }

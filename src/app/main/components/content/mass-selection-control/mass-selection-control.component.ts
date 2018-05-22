@@ -34,7 +34,9 @@ ngOnInit(){
 		  		left:dims.left,
 		  		top:dims.top,
 		  		width:dims.width,
-		  		height:dims.height
+		  		height:dims.height,
+		  		leftRelative:this.el.nativeElement.style.left.replace('px',''),
+		  		topRelative:this.el.nativeElement.style.top.replace('px','')
 		  	}
 		  	return pos;
   }

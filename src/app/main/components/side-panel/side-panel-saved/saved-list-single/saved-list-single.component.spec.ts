@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SidePanelSearchComponent } from './side-panel-search.component';
+import { SavedListSingleComponent } from './saved-list-single.component';
 
-describe('SidePanelSearchComponent', () => {
-  let component: SidePanelSearchComponent;
-  let fixture: ComponentFixture<SidePanelSearchComponent>;
+describe('SavedListSingleComponent', () => {
+  let component: SavedListSingleComponent;
+  let fixture: ComponentFixture<SavedListSingleComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SidePanelSearchComponent ]
+      declarations: [ SavedListSingleComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SidePanelSearchComponent);
+    fixture = TestBed.createComponent(SavedListSingleComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
