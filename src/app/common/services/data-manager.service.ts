@@ -61,6 +61,7 @@ export interface AppState{
 @Injectable()
 export class DataManagerService {
 data:BehaviorSubject<AppState>;
+savedDocsChanged:BehaviorSubject<boolean>;
 currentIds:any=[];
 layoutIds:any=[];
 
@@ -73,6 +74,7 @@ layoutIds:any=[];
   		statusSaved:'All changes saved'
   	}
 	this.data = new BehaviorSubject<AppState>(data);
+	this.savedDocsChanged = new BehaviorSubject(true);
   }
 
   createNewLayout(){
@@ -117,7 +119,8 @@ deleteSavedDocument(id){
 			})
 			updatedDocsArray = JSON.stringify(updatedDocsArray);
 			window.localStorage.setItem('savedDocsResumeBuilder',updatedDocsArray);
-			resolve('Success');
+			this.savedDocsChanged.next(true);
+			resolve(doc.title);
 		}else{
 			reject('Document is not found');
 		}
@@ -169,7 +172,7 @@ saveCurrentDocument(){
 			let element = JSON.stringify([currentDoc.activeLayout]);
 			window.localStorage.setItem(dbKey,element);
 		}
-		
+		this.savedDocsChanged.next(true);
 		resolve(currentDoc.activeLayout.title);
 	});	
 }

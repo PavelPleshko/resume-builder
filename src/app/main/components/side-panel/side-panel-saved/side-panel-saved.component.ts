@@ -11,7 +11,12 @@ savedDocs:any[];
   constructor(private dataManagerService:DataManagerService) { }
 
   ngOnInit() {
-  	this.getSavedDocs();
+  //	this.getSavedDocs();
+    this.dataManagerService.savedDocsChanged.subscribe((change)=>{
+      if(change){
+        this.getSavedDocs();
+      }
+    })
   }
 
 
@@ -28,9 +33,10 @@ onProjectChosen(project){
 }
 
 onProjectDeleted(id){
-	this.dataManagerService.deleteSavedDocument(id).then((info)=>{
-		this.getSavedDocs();
-	})
+	this.dataManagerService.deleteSavedDocument(id).then((title)=>{
+    alert(`Project ${title} has been deleted`);
+  });
+  
 }
 
 }

@@ -48,7 +48,7 @@ _selected:boolean = false;
 _hovered:boolean = false;
 @HostListener('mouseenter')
 onHover(){
-	if(!this._hovered && !this.selected){
+	if(!this._hovered && !this.selected && this.element.element != 'li'){
 		this._hovered = true;
 		this.el.nativeElement.className += ' hovered';
 	}
@@ -56,7 +56,7 @@ onHover(){
 
 @HostListener('mouseleave')
 onUnhover(){
-	if(this._hovered && !this.selected){
+	if(this._hovered && !this.selected && this.element.element != 'li'){
 		this._hovered = false;
 		this.el.nativeElement.className = this.el.nativeElement.className.replace(' hovered','');
 	}
@@ -97,7 +97,6 @@ onDoubleClick(evt){
 }
 
 ngOnInit(){
-	this.removeCustomClass('hovered');
 	if(this.element){
 		this.el.nativeElement.style.left = this.inner ? '' :  this.element.attrs.x+'px';
 		this.el.nativeElement.style.top = this.inner ? '' :  this.element.attrs.y+'px';
@@ -117,6 +116,7 @@ ngOnInit(){
 }
 
 ngAfterViewInit(){
+
 	this.cdr.detach();
 }
 

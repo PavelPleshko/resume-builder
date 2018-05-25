@@ -198,7 +198,6 @@ replaceSvgsWithCanvas(pdf,callback) {
 
     xml = (new XMLSerializer()).serializeToString(this);
     xml = xml.replace(/xmlns=\"http:\/\/www\.w3\.org\/2000\/svg\"/, '');
-    console.log(xml,newCanvas);
    	canvg(newCanvas, xml);
     let src= newCanvas.toDataURL();
 	 let newImg = new Image();

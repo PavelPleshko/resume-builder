@@ -29,7 +29,7 @@ export const additionalTextElements:ILayoutElement[]=[
 {attrs:{},element:'span',content:'Heading',mainStyles:{'font-size':'28px','z-index':'1','font-weight':'bold','width':'100%'}},
 {attrs:{},element:'span',content:'Subheading',mainStyles:{'font-size':'21px','z-index':'2'}}
 ]},
-{id:5,attrs:{x:100,y:100},element:'div',mainStyles:{'color':'#000000','width':'150px','height':'50px','white-space':'nowrap','display':'flex','flex-flow':'row wrap','align-items':'center','justify-content':'space-between'},innerAssets:[
+{id:5,attrs:{x:100,y:100},element:'div',mainStyles:{'color':'#000000','width':'150px','height':'50px','display':'flex','flex-flow':'row wrap','align-items':'center','justify-content':'space-between'},innerAssets:[
 
 	{attrs:{},element:'span',mainStyles:{'font-size':'18px','font-weight':'bold','text-transform':'uppercase','min-width':'35%'},content:'Date'},
 	{attrs:{},element:'span',mainStyles:{'font-size':'12px','vertical-align':'middle','min-width':'65%','text-align':'right'},content:'12 of March'},
