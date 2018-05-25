@@ -1,4 +1,5 @@
-import { Component, OnInit,Input,ChangeDetectionStrategy} from '@angular/core';
+import { Component, OnInit,Input,ChangeDetectionStrategy,HostListener,EventEmitter,Output} from '@angular/core';
+
 
 @Component({
   selector: 'app-saved-list-single',
@@ -8,9 +9,24 @@ import { Component, OnInit,Input,ChangeDetectionStrategy} from '@angular/core';
 })
 export class SavedListSingleComponent implements OnInit {
 @Input() item;
+@Output() chooseProject = new EventEmitter();
+@Output() deleteProject = new EventEmitter();
+
+
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+
+addProjectToThePanel(){
+this.chooseProject.emit(this.item);
+}
+
+
+  deleteDocument(){
+  	this.deleteProject.emit(this.item.id);
   }
 
 }

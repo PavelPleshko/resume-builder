@@ -36,14 +36,14 @@ return pos;
 get transformVal(){
   let transform = this.element.transform;
   if(transform){
-    let scale = transform.scale || '';
-    let translate = transform.translate || '';
+    // let scale = transform.scale || '';
+    // let translate = transform.translate || '';
     if(!this.initializedTransformClass){
        this.renderer.addClass(this.el.nativeElement,'transformable');
        this.initializedTransformClass = true;
     }
    
-    return `${translate} ${scale}`;
+    return `${transform}`;
   }
   
 }
@@ -72,6 +72,21 @@ get scalableY(){
  
 }
 
+@HostBinding('attr.stretchable')
+get stretchable(){
+  return this.element.stretchable || false;
+}
+
+@HostBinding('attr.stretchWhileResize')
+get stretchWhileResize(){
+  return this.element.stretchWhileResize || false;
+}
+
+@HostBinding('attr.standalone')
+get standalone(){
+  return this.element.standalone || false;
+}
+
 
 
   constructor(private cdr:ChangeDetectorRef,private el:ElementRef,
@@ -93,9 +108,12 @@ get scalableY(){
   }
 
   setStyleAndAttributes(el,attrs){
+    let element = this.el.nativeElement.parentElement;
     for(var key in attrs){
         if(key == 'fill'){
             this.renderer.setStyle(this.svgReference,key,attrs[key]);
+        }else if(key == 'z-index' || key == 'transform'){
+            this.renderer.setStyle(element.parentElement,key,attrs[key]);
         }else{
                 this.renderer.setAttribute(this.svgReference,key,attrs[key])
         }
@@ -103,12 +121,12 @@ get scalableY(){
   }
 
   createElement(parent,child){
-  	if(child.element && !child.hasOwnProperty('path') && !child.innerAssets){
+  	if(child.element && (!child.hasOwnProperty('path') || child.path.length < 1) && (!child.innerAssets || child.innerAssets.length <1)){
   		this.svgReference = document.createElementNS('http://www.w3.org/2000/svg',child.element);
   		this.setStyleAndAttributes(this.svgReference,child.attrs);
   	this.setPosition(child.pos,this.svgReference);
   	this.renderer.appendChild(parent,this.svgReference);
-  	}else if(child.hasOwnProperty('path') && !child.hasOwnProperty('element') && !child.innerAssets){
+  	}else if((child.hasOwnProperty('path') && child.path.length>0) && !child.hasOwnProperty('element') && (!child.innerAssets || child.innerAssets.length <1)){
   		this.svgReference = document.createElementNS('http://www.w3.org/2000/svg','path');
   		this.renderer.setAttribute(this.svgReference,'d',child.path);
   		this.setStyleAndAttributes(this.svgReference,child.attrs);

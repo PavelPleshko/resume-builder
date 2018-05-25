@@ -1,4 +1,4 @@
-import { Component,Input,ChangeDetectionStrategy } from '@angular/core';
+import { Component,Input,ChangeDetectionStrategy,Output,EventEmitter} from '@angular/core';
 
 @Component({
   selector: 'app-saved-list',
@@ -8,8 +8,17 @@ import { Component,Input,ChangeDetectionStrategy } from '@angular/core';
 })
 export class SavedListComponent {
 @Input() items;
+@Output() projectDeleted = new EventEmitter();
+@Output() projectChosen = new EventEmitter();
+
   constructor() { }
 
 
+onChooseProject(project){
+this.projectChosen.emit(project);
+}
 
+onDeleteProject(id){
+		this.projectDeleted.emit(id);
+}
 }

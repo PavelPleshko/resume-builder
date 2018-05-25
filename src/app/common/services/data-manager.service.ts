@@ -1,27 +1,28 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {mergeObject} from '../helpers/functions';
+import {mergeObject,doesIdInclude} from '../helpers/functions';
 
 
 export type TStatus = 'Unsaved changes' | 'All changes saved';
 
-export interface ILayoutSvgElement{
-	id?:number;
-	type?:string;
-	pos?:object;
-	attrs:object;
-	name?:string;
-	url?:string;
-	element?:string;
-	path?:string;
-	viewBox?:string;
-	innerAssets?:ILayoutSvgElement[] | any;
-	changable?:boolean;
-	stretchable?:boolean;
-	stretchWhileResize?:boolean;
-	transform?:object;
+export class ILayoutSvgElement{
+	id?:number=null;
+	type?:string='';
+	pos?:object={};
+	attrs:object={};
+	name?:string='';
+	url?:string='';
+	element?:string='';
+	path?:string='';
+	viewBox?:string='';
+	innerAssets?:ILayoutSvgElement[] | any=[];
+	changable?:boolean = false;
+	stretchable?:boolean = false;
+	stretchWhileResize?:boolean = false;
+	transform?:string;
 	scalable?:object;
 	fixed?:boolean;
+	standalone?:boolean=false;
 }
 
 export class ILayoutElement{
@@ -45,11 +46,11 @@ export class ILayout{
 	image?:string='';
 	assets?:Array<ILayoutElement>=[];
 	svgAssets?:Array<ILayoutSvgElement>=[];
+	updated?:Date=new Date();
 }
 
 
 export interface AppState{
-	documentTitle:string,
 	layouts:ILayout[],
 	activeLayout:ILayout,
 	activeSetOfElements:any[],
@@ -61,22 +62,29 @@ export interface AppState{
 export class DataManagerService {
 data:BehaviorSubject<AppState>;
 currentIds:any=[];
+layoutIds:any=[];
 
   constructor() { 
+
   	let data:AppState = {
-  		documentTitle:'Untitled',
   		layouts:this.getLayouts(),
-  		activeLayout:new ILayout(),
+  		activeLayout:this.createNewLayout(),
   		activeSetOfElements:[],
   		statusSaved:'All changes saved'
   	}
 	this.data = new BehaviorSubject<AppState>(data);
   }
 
+  createNewLayout(){
+  	let layout = new ILayout();
+  	layout.id = generateUI(this.layoutIds);
+  	return layout;
+  }
+
 
 updateTitle(newTitle){
 let data = this.data.getValue();
-let newData:AppState= {...data,documentTitle:newTitle};
+let newData:AppState= {...data,activeLayout:{...data.activeLayout,title:newTitle}};
 this.data.next(newData);
 this.changeSavedStatus(true);
 }
@@ -91,26 +99,64 @@ chooseLayout(id:string){
 
 createNewDocument(){
 let data = this.data.getValue();
-let layout = new ILayout();
+let layout = this.createNewLayout();
 let newData:AppState = {...data,activeLayout:layout};
 this.data.next(newData);
 this.changeSavedStatus(true);
 }
 
+deleteSavedDocument(id){
+	return new Promise((resolve,reject)=>{
+		let docsArray = window.localStorage.getItem('savedDocsResumeBuilder');
+	if(docsArray){
+		let updatedDocsArray = JSON.parse(docsArray);
+		let doc = this.findElementInArray(updatedDocsArray,id);
+		if(doc){
+			updatedDocsArray = [].filter.call(updatedDocsArray,(docSingle:ILayout)=>{
+				return docSingle.id != id;
+			})
+			updatedDocsArray = JSON.stringify(updatedDocsArray);
+			window.localStorage.setItem('savedDocsResumeBuilder',updatedDocsArray);
+			resolve('Success');
+		}else{
+			reject('Document is not found');
+		}
+	}
+
+	})
+	
+
+}
 saveCurrentDocument(){
 	return new Promise((resolve,reject)=>{
 		let currentDoc:AppState = this.data.getValue();
 		let dbKey = 'savedDocsResumeBuilder';
-		let key = `${currentDoc.documentTitle}-${currentDoc.activeLayout.id}`;
+		let key = `${currentDoc.activeLayout.title}-${new Date()}`;
 		let item = JSON.stringify(currentDoc);
 		let items = window.localStorage.getItem(dbKey);
-			
+		let date = new Date();	
+		let assets = document.querySelectorAll('.text-asset');
+		let assetsArr:ILayoutElement[] = [];
+		let svgAssets = document.querySelectorAll('.svg-asset');
+		let svgAssetsArr:ILayoutSvgElement[] = [];
+		
+		[].forEach.call(assets,(asset,idx)=>{
+			assetsArr[idx] = this.getChildrenData(asset,new ILayoutElement());
+			assetsArr[idx].attrs['x'] = asset.style.left.replace('px','');
+			assetsArr[idx].attrs['y'] = asset.style.top.replace('px','');
+		});
 
+		[].forEach.call(svgAssets,(svgAsset,idx)=>{
+			svgAssetsArr[idx] = this.getSvgAssetData(svgAsset,new ILayoutSvgElement());
+		})
+		currentDoc.activeLayout.assets = assetsArr;
+		currentDoc.activeLayout.svgAssets = svgAssetsArr;
 		if(items){
 		let list = JSON.parse(items);
 			let found = list.findIndex((doc)=>{
-				return doc.id == currentDoc.activeLayout.id && doc.title == currentDoc.activeLayout.title;
+				return doc.id == currentDoc.activeLayout.id;
 			});
+			currentDoc.activeLayout.updated = date;
 			if(found>=0){
 				list.splice(found,1,currentDoc.activeLayout);
 			}else{
@@ -119,11 +165,12 @@ saveCurrentDocument(){
 			list = JSON.stringify(list);
 			window.localStorage.setItem(dbKey,list);
 		}else{
+			currentDoc.activeLayout.updated = date;
 			let element = JSON.stringify([currentDoc.activeLayout]);
 			window.localStorage.setItem(dbKey,element);
 		}
 		
-		resolve(currentDoc.documentTitle);
+		resolve(currentDoc.activeLayout.title);
 	});	
 }
 
@@ -138,6 +185,141 @@ if(isChanged){
 let newData:AppState = {...data,statusSaved:status};
 this.data.next(newData);
 }
+
+changeCurrentProject(project){
+	let data = this.data.getValue();
+	let newData:AppState = {...data,activeLayout:project};
+	this.data.next(newData);
+}
+
+
+
+
+getSvgAssetData(svg,properties:ILayoutSvgElement){
+  	properties.viewBox = svg.getAttribute('viewBox');
+  	properties.pos['height'] = svg.parentElement.style.height.replace('px','');
+  	properties.pos['width'] = svg.parentElement.style.width.replace('px','');
+  	properties.pos['x'] = svg.parentElement.style.left.replace('px','');
+  	properties.pos['y'] = svg.parentElement.style.top.replace('px','');
+  	properties.attrs['z-index'] = svg.parentElement.style.zIndex;
+  	properties.attrs['transform'] = svg.parentElement.style.transform;
+
+
+  	let id = svg.id;
+  	if(id){
+  		properties.id = id.split('-')[1];
+  	}
+  	let children = [].filter.call(svg.children,(svg)=>{
+  		return svg.tagName != 'comment';
+  	})
+  	if(children && children.length == 1){
+  		if(children[0].getAttribute('changable')){
+  			properties.changable = children[0].getAttribute('changable');
+  			properties.attrs['fill']=children[0].style.fill;
+  		}	
+  		  	properties.stretchable = children[0].getAttribute('stretchable');
+  			properties.stretchWhileResize = children[0].getAttribute('stretchWhileResize');
+  			this.getSvgAssetChildrenData(children[0],properties);
+  	}
+  	return properties;
+}
+
+getSvgAssetChildrenData(child,container:ILayoutSvgElement){
+if(child.children && child.children.length == 1 && !child.children[0].getAttribute('standalone')){
+	let newChild = child.children[0];
+	switch (newChild.tagName.toLowerCase()){
+		case "path":
+				container.path = newChild.getAttribute('d');
+				delete container.element;
+			break;
+		case "rect":
+				container.attrs['width'] = newChild.getAttribute('width');
+				container.attrs['height'] = newChild.getAttribute('height');
+				container.pos['x'] = newChild.getAttribute('x');
+				container.pos['y'] = newChild.getAttribute('y');
+				container.element = newChild.tagName.toLowerCase();
+			break;
+		case "circle":
+			container.attrs['cx'] = newChild.getAttribute('cx');
+			container.attrs['cy'] = newChild.getAttribute('cy');
+			container.attrs['r'] = newChild.getAttribute('r');
+			container.element = newChild.tagName.toLowerCase();
+			break;
+		case "polygon":
+			container.attrs['points'] = newChild.getAttribute('points');
+			container.element = newChild.tagName.toLowerCase();
+			break;
+	}
+	container.attrs['fill'] = newChild.style.fill;
+	container.transform = child.getAttribute('transform');
+	container.changable = newChild.getAttribute('changable') || false;	
+}else{
+  		[].forEach.call(child.children,(child,idx)=>{
+  			let newSvgAsset = new ILayoutSvgElement();
+  			newSvgAsset.attrs['fill'] = child.style.fill;
+  			container.innerAssets[idx]=this.getSvgAssetChildrenData(child,newSvgAsset);
+  		}) 	
+}
+	return container;
+}
+
+  getChildrenData(el,properties,groupedEl?){
+          if(el.children && el.children.length>0){
+           let parentContent = el.querySelector('.single-parent-content');
+           if(parentContent){
+             properties.content = parentContent.textContent;
+             if(parentContent.tagName){
+                 properties.element = parentContent.tagName.toLowerCase();
+             }
+             properties.mainStyles = this.getElementStyles(parentContent.parentElement,groupedEl);
+           }else{
+             properties.mainStyles = this.getElementStyles(el,groupedEl);
+           }
+           [].forEach.call(el.children,(child,idx)=>{
+             if(doesIdInclude(child.id,'inner')){
+               if(child.textContent && child.textContent.length){
+                  properties.innerAssets[idx] = new ILayoutElement();
+                  properties.innerAssets[idx].mainStyles=this.getElementStyles(child,groupedEl);
+                  properties.innerAssets[idx].element = child.getAttribute('list-element') == 'true' ? 'li' : child.tagName.toLowerCase();
+
+                  properties.innerAssets[idx].list = child.getAttribute('list-element') == 'true' ? true : false;
+                  properties.innerAssets[idx].content=child.textContent;
+                  if(child.children && child.children.length > 0){
+                    this.getChildrenData(child,properties.innerAssets[idx],groupedEl);
+                  }
+                  
+               }
+             }
+           })
+         }
+         return properties;
+  }
+
+  getElementStyles(el,groupedEl?){
+    let stylesObj={};
+    let elStyles = el.style;
+    for(var key in elStyles){
+      if(elStyles[key] && elStyles[key].length>0 && key !='length' && key != 'top' && key != 'left' && key != 'cssText'){
+        stylesObj[key]=elStyles[key];
+      }
+    }
+    if(groupedEl){
+      let left = groupedEl.attrs['x'];
+      let top = groupedEl.attrs['y'];
+      let elDims:ClientRect = el.getBoundingClientRect();
+      let parElDims:ClientRect = el.parentElement.getBoundingClientRect();
+      let translate,trX,trY;
+    
+      if(el.tagName != 'LI' && el.getAttribute('translatable') == 'true'){
+         trX= (elDims.left-parElDims.left)-left;
+         trY= (elDims.top-parElDims.top)-top;
+         translate = `translateX(${trX}px) translateY(${trY}px)`;
+         stylesObj['transform'] = translate;
+      }
+    }
+    return stylesObj;
+  }
+
 
 getLayouts():ILayout[]{
 	return [
@@ -250,7 +432,7 @@ copyAndInsertAssetInLayout(index:any,type:string,properties?:any):void{
 			newAsset = this.mergeRecursive(newAsset,properties);		
 		}
 		
-		newAsset.id = this.generateUI(this.currentIds);
+		newAsset.id = generateUI(this.currentIds);
 		newAsset[attrs]['x'] =Number(newAsset[attrs]['x'])+10;
 		newAsset[attrs]['y'] =Number(newAsset[attrs]['y'])+10;
 		activeLayout[assets] = [...activeLayout[assets],newAsset];
@@ -306,7 +488,7 @@ addNewElement(element:ILayoutElement,type?:string,grouping?:boolean){
 let data = this.data.getValue();
 let activeLayout = data.activeLayout;
 let assets = activeLayout[property];
-element.id=this.generateUI(this.currentIds);
+element.id=generateUI(this.currentIds);
 let newAssets = assets.concat(element)
 		let newData:AppState= {...data,activeLayout:{...activeLayout,[property]:newAssets}};
 		this.data.next(newData);
@@ -357,7 +539,10 @@ findAsset(id){
 	return asset;
 }
 
-generateUI(currentIds){
+
+}
+
+function generateUI(currentIds){
   var text = "",
       possible = "ABCDEF",
   possibleNums = "0123456789";
@@ -368,8 +553,7 @@ generateUI(currentIds){
   for( var j=0; j < 3; j++ ){
     text += possibleNums.charAt(Math.floor(Math.random() * 10));
   }
-return currentIds.indexOf(text)<0 ? (currentIds.push(text),text) : this.generateUI(currentIds);
-}
+return currentIds.indexOf(text)<0 ? (currentIds.push(text),text) : generateUI(currentIds);
 }
 
 

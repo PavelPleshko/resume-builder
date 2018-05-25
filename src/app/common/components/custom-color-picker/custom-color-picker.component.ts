@@ -44,7 +44,6 @@ registerOnChange(fn) {
 }
 
 ngAfterViewInit(){
-  console.log(this.value);
   if(this.value){
     this.currentColor.rgb = this.value;
     

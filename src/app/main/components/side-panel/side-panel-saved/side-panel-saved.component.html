@@ -1,5 +1,5 @@
 <div class="saved-list">
 
-<app-saved-list [items]="savedDocs"></app-saved-list>
+<app-saved-list [items]="savedDocs" (projectChosen)="onProjectChosen($event)" (projectDeleted)="onProjectDeleted($event)"></app-saved-list>
 
 </div>

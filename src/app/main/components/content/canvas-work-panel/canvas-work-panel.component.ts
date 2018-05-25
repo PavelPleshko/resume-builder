@@ -5,6 +5,7 @@ import {FormBuilder,FormGroup} from '@angular/forms';
 import {fontFamily} from '../../../../common/styleOptions/font-family';
 import {fontSize} from '../../../../common/styleOptions/font-size';
 import {textDecor} from '../../../../common/styleOptions/text-decoration';
+import {doesIdInclude} from '../../../../common/helpers/functions';
 import {ContentService} from '../../../../common/services/content.service';
 import {DataManagerService,ILayoutElement} from '../../../../common/services/data-manager.service';
 import {pluck} from 'rxjs/operators/pluck';
@@ -283,7 +284,7 @@ checkIfGrouped(element){
 
   copySelectedEl():void{
   		let el = this.contentService.getSelectedElementVal(false);
-      while(!this.doesIdInclude(el.id,'asset')){
+      while(!doesIdInclude(el.id,'asset')){
            el=el.parentElement;
          }
   		let idx = el.id.split('-')[1];
@@ -312,7 +313,7 @@ checkIfGrouped(element){
        }
        if(elements){
         let assetsToDelete:string[]=[];
-         elements = elements.filter((el)=>this.doesIdInclude(el.id,'asset'));
+         elements = elements.filter((el)=>doesIdInclude(el.id,'asset'));
          elements.forEach((element,idx)=>{
            let el = new ILayoutElement();
           assetsToDelete.push(element.id.split('-')[1]);
@@ -356,10 +357,6 @@ checkIfGrouped(element){
     }
   }
 
-  doesIdInclude(id:string,searchItem:string){
-    return id.includes(searchItem);
-  }
-
 
   getChildrenData(el,properties,groupedEl?){
           if(el.children && el.children.length>0){
@@ -374,7 +371,7 @@ checkIfGrouped(element){
              properties.mainStyles = this.getElementStyles(el,groupedEl);
            }
            [].forEach.call(el.children,(child,idx)=>{
-             if(this.doesIdInclude(child.id,'inner')){
+             if(doesIdInclude(child.id,'inner')){
                if(child.textContent && child.textContent.length){
                   properties.innerAssets[idx] = new ILayoutElement();
                   properties.innerAssets[idx].mainStyles=this.getElementStyles(child,groupedEl);

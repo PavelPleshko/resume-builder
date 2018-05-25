@@ -67,16 +67,16 @@ export const svgShapeElements:ILayoutSvgElement[] = [
 ];
 
 export const svgLineElements:ILayoutSvgElement[]=[
-{id:1,type:'line',attrs:{},pos:{x:100,y:100,width:400,height:20},name:'line straight',url:'line_straight.png',viewBox:'0 0 400 20',stretchable:true,stretchWhileResize:true,innerAssets:[
+{id:1,type:'line',attrs:{},pos:{x:100,y:100,width:400,height:20},standalone:true,name:'line straight',url:'line_straight.png',viewBox:'0 0 400 20',stretchable:true,stretchWhileResize:true,innerAssets:[
 {pos:{x:0,y:'50%'},attrs:{'fill':'#000000','width':'100%','height':'10%'},element:'rect',changable:true}
 ]},
-{id:2,type:'line',attrs:{},pos:{x:100,y:100,width:500,height:30},name:'line straight thick',url:'line_straight_thick.png',viewBox:'0 0 500 30',stretchable:true,stretchWhileResize:true,innerAssets:[
+{id:2,type:'line',attrs:{},pos:{x:100,y:100,width:500,height:30},standalone:true,name:'line straight thick',url:'line_straight_thick.png',viewBox:'0 0 500 30',stretchable:true,stretchWhileResize:true,innerAssets:[
 {pos:{x:0,y:0},attrs:{'fill':'#000000','width':'100%','height':'100%'},element:'rect',changable:true}
 ]},
-{id:3,type:'line',attrs:{'fill':'#8CCDB0'},pos:{x:0,y:0,width:485.462962962963,height:26.215},changable:true,stretchable:true,name:'line straight vec',url:'line_straight_vec.png',viewBox:'0 0 485.462962962963 26.215',stretchWhileResize:false,innerAssets:[
-{pos:{},transform:{translate:'translate(-15.53703703703701, 1)',scale:'scale(1, 1)'},attrs:{},path:`M476.568,0v10.205h-8.688v3.021h8.688v10.206H500V0H476.568z M497.07,20.502h-17.573V2.929h17.573 V20.502z`},
-{pos:{x:'34.879',y:'10.2'},scalable:{x:true,y:false},fixed:true,transform:{translate:'translate(1.1709842113615623, 1)',scale:'scale(0.9664272439846348, 1)'},attrs:{width:'433','height':'3.021'},element:'rect'},
-{pos:{},transform:{translate:'translate(1, 1)',scale:'scale(1, 1)'},fixed:true,attrs:{},path:`M23.432,10.205V0H0v23.432h23.432V13.227h11.447v-3.021L23.432,10.205L23.432,10.205z
+{id:3,type:'line',attrs:{'fill':'#8CCDB0'},pos:{x:0,y:0,width:485.462962962963,height:26.215},changable:true,stretchable:false,name:'line straight vec',url:'line_straight_vec.png',viewBox:'0 0 485.462962962963 26.215',stretchWhileResize:false,innerAssets:[
+{pos:{},transform:'translate(-15.53703703703701, 1) scale(1, 1)',attrs:{},path:`M476.568,0v10.205h-8.688v3.021h8.688v10.206H500V0H476.568z M497.07,20.502h-17.573V2.929h17.573 V20.502z`},
+{pos:{x:'34.879',y:'10.2'},scalable:{x:true,y:false},fixed:true,transform:'translate(1.1709842113615623, 1) scale(0.9664272439846348, 1)',attrs:{width:'433','height':'3.021'},element:'rect'},
+{pos:{},transform:'translate(1, 1) scale(1, 1)',fixed:true,attrs:{},path:`M23.432,10.205V0H0v23.432h23.432V13.227h11.447v-3.021L23.432,10.205L23.432,10.205z
 			 M20.503,20.502H2.929V2.929h17.574V20.502z`}
 ]}
 

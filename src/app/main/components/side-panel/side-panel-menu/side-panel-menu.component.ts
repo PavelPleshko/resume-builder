@@ -1,4 +1,5 @@
 import { Component, OnInit,AfterViewInit,ViewChild,ElementRef } from '@angular/core';
+import {Router} from '@angular/router';
 
 export interface IMenuItem{
 	title:string;
@@ -14,7 +15,7 @@ export class SidePanelMenuComponent implements OnInit,AfterViewInit {
 menuItems:IMenuItem[];
 @ViewChild('active_indicator') active_indicator:ElementRef;
 currentActiveIndex:number = 1;
-  constructor() { }
+  constructor(private router:Router) { }
 
   ngOnInit() {
   	this.menuItems = [
@@ -23,7 +24,9 @@ currentActiveIndex:number = 1;
   		{title:'elements',iconName:'fa fa-puzzle-piece',link:'elements'},
   		{title:'text',iconName:'fa fa-font',link:'text'},
   		{title:'colors',iconName:'fa fa-adjust',link:'colors'}
-  	]
+  	];
+    let routerState = this.router.routerState.snapshot;
+    console.log(routerState);
   }
 
   ngAfterViewInit(){

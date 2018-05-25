@@ -57,3 +57,9 @@ function deepmerge(target, source, optionsArgument) {
         return mergeObject(target, source, optionsArgument)
     }
 }
+
+
+
+export function doesIdInclude(id:string,searchItem:string){
+    return id.includes(searchItem);
+  }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {DataManagerService} from '../../../../common/services/data-manager.service';
 
 @Component({
   selector: 'app-side-panel-saved',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SidePanelSavedComponent implements OnInit {
 savedDocs:any[];
-  constructor() { }
+  constructor(private dataManagerService:DataManagerService) { }
 
   ngOnInit() {
   	this.getSavedDocs();
@@ -20,6 +21,16 @@ savedDocs = window.localStorage.getItem('savedDocsResumeBuilder');
 if(savedDocs){
 	this.savedDocs = JSON.parse(savedDocs);
 }
-console.log(this.savedDocs);
 }
+
+onProjectChosen(project){
+	this.dataManagerService.changeCurrentProject(project);
+}
+
+onProjectDeleted(id){
+	this.dataManagerService.deleteSavedDocument(id).then((info)=>{
+		this.getSavedDocs();
+	})
+}
+
 }

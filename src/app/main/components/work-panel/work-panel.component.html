@@ -35,7 +35,10 @@
 
     <ul class="panel-right-list">
     	<li class="panel-right-list-element" placement="bottom" [ngbTooltip]="currentTooltipValue">
-    		<input type="text" (click)="enterEditMode()" [(ngModel)]="documentTitle" (blur)="saveTitle(title.value)" #title name="documentTitle" id="documentTitle" [ngClass]="{'form-control-plaintext':!editMode,'form-control':editMode}">
+    		<input type="text" (click)="enterEditMode()" [(ngModel)]="documentTitle" #title name="documentTitle" id="documentTitle" [ngClass]="{'form-control-plaintext':!editMode,'form-control':editMode}">
+        <div class="save-btn" *ngIf="editMode" (click)="saveTitle(title.value)">
+        <i class="fa fa-check text-light"></i>
+      </div>
     	</li>
     	<li class="panel-right-list-element">
     		<button class="btn btn-success text-light" (click)="downloadPdf()">Download</button>

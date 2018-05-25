@@ -115,7 +115,6 @@ _visible:boolean = false;
   applyStylesToSelectedEl(styles){
   	let selectedSvg = document.querySelector('.selected');
   	if(selectedSvg){
-  		console.log(selectedSvg);
   		for(var key in styles){
   		if(key != 'colors' && styles[key]){
   			this.renderer.setStyle(selectedSvg,key,styles[key].toString());
@@ -132,7 +131,6 @@ _visible:boolean = false;
   		for(var key in svgStyles){
   			data[svgStyles[key].title]=selectedSvg.style[svgStyles[key].title]
   		}
-  		console.log(selectedSvg.style);
   	}
   	return data;
   }

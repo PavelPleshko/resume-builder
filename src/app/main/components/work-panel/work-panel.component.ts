@@ -23,8 +23,7 @@ editMode:boolean = false;
 
   ngOnInit() {
   	this.dataService.data.pipe(map((data:any)=>{
-  		console.log(data);
-  		let obj = {title:data.documentTitle,
+  		let obj = {title:data.activeLayout.title,
   			status:data.statusSaved};
   		return obj;
   	})).subscribe((update:any)=>{
@@ -98,7 +97,6 @@ downloadPdf(){
 cleanUp(){
 	
 	[].forEach.call(document.getElementsByClassName('tempImage'),(el)=>{
-		console.log(el.parentNode);
 		el.parentNode.removeChild(el);
 	})
 	let svgs = document.getElementsByTagName('svg');
@@ -200,6 +198,7 @@ replaceSvgsWithCanvas(pdf,callback) {
 
     xml = (new XMLSerializer()).serializeToString(this);
     xml = xml.replace(/xmlns=\"http:\/\/www\.w3\.org\/2000\/svg\"/, '');
+    console.log(xml,newCanvas);
    	canvg(newCanvas, xml);
     let src= newCanvas.toDataURL();
 	 let newImg = new Image();

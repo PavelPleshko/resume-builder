@@ -49,14 +49,16 @@
 
 	&-element{
 	margin-right:.5em;
+	position:relative;
 	input{
 	color:#fff;
 	font-weight:700;
-	cursor:pointer;
+	
 	
 	}
 	.form-control-plaintext{
 	text-align:center;
+	cursor:pointer;
 	}
 	.form-control{
 	text-align:left;
@@ -70,5 +72,20 @@
 
 	}
 
+.save-btn{
+    position: absolute;
+    top: 50%;
+    margin-right: 10px;
+    display: inline-block;
+    right: 0;
+    text-align: right;
+    transform: translateY(-50%);
+    font-size: 1em;
+    cursor: pointer;
+    opacity:.8;
 
+    &:hover{
+    opacity:1;
+    }
+}
 }

@@ -3,7 +3,6 @@ $main-color:#31343a;
 *{
 	margin:0;
 	padding:0;
-	transform-origin: 0px 0px 0px;
 }
 
 :placeholder{
@@ -202,6 +201,7 @@ body{
 	border:none;
 	outline:none;
 	padding:4px;
+	cursor:pointer;
 	&:hover{
 	background-color:rgba(0,0,0,.1);
 

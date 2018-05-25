@@ -1,1 +1,6 @@
-<app-saved-list-single *ngFor="let item of items" [item]="item"></app-saved-list-single>
+<ng-container *ngIf="items && items.length;else noitems">
+<app-saved-list-single  class="px-2 col-sm-12" *ngFor="let item of items" [item]="item" (deleteProject)="onDeleteProject($event)" (chooseProject)="onChooseProject($event)"></app-saved-list-single>
+</ng-container>
+<ng-template #noitems>
+	<div class="px-2 col-sm-12 text-muted text-center">No saved documents</div>
+</ng-template>

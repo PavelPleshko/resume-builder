@@ -1,3 +1,18 @@
-<p>
-  saved-list-single works!
-</p>
+<div class="saved-single row mx-1">
+	<div class="saved-single-title col-sm-5">
+		{{item.title}}
+	</div>
+	<div class="text-muted saved-date col-sm-5 text-center">
+		<small>{{item.updated | date : 'MMM dd,yyyy hh:mm'}}</small>
+	</div>
+	<div class="col-sm-1">
+		<i class="fa fa-plus hoverable" (click)="addProjectToThePanel()">
+			
+		</i>
+	</div>
+	<div class="col-sm-1">
+		<i class="fa fa-trash hoverable" (click)="deleteDocument()">
+			
+		</i>
+	</div>
+</div>
