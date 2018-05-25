@@ -1,5 +1,6 @@
 import { Component, OnInit,AfterViewInit,ViewChild,ElementRef } from '@angular/core';
 import {Router} from '@angular/router';
+import {take} from 'rxjs/operators';
 
 export interface IMenuItem{
 	title:string;
@@ -19,18 +20,32 @@ currentActiveIndex:number = 1;
 
   ngOnInit() {
   	this.menuItems = [
+    {title:'layouts',iconName:'fa fa-columns',link:''},
   		{title:'saved',iconName:'fa fa-save',link:'saved'},
-  		{title:'layouts',iconName:'fa fa-columns',link:''},
+  		
   		{title:'elements',iconName:'fa fa-puzzle-piece',link:'elements'},
   		{title:'text',iconName:'fa fa-font',link:'text'},
   		{title:'colors',iconName:'fa fa-adjust',link:'colors'}
   	];
-    let routerState = this.router.routerState.snapshot;
-    console.log(routerState);
+    this.router.events.pipe(take(1)).subscribe((event:any)=>{
+      let activeTabIdx = this.determineActiveTab(event.url);
+      this.changeActiveItem(activeTabIdx);
+    });
   }
 
   ngAfterViewInit(){
   	this.changeActiveItem(this.currentActiveIndex);
+  }
+
+  determineActiveTab(url){
+    let newUrl = url.replace('/','');
+    let indexActive=0;
+    [].forEach.call(this.menuItems,(item,idx)=>{
+      if(item.link == newUrl){
+        indexActive = idx;
+      }
+    })
+    return indexActive;
   }
 
 

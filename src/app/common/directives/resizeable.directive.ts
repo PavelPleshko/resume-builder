@@ -109,7 +109,7 @@ this.listeners.push(mdown);
     this.elStyle.top = (Number(this.elStyle.top.replace('px','')) + offsetY)+'px';
     this.elStyle.width = (Number(this.elStyle.width.replace('px','')) - offsetX)+'px';
     this.elStyle.height= (Number(this.elStyle.height.replace('px','')) - offsetY)+'px';
-    if(this.resizable){
+    if(this.resizable && this.resizable != 'false' && this.resizable != ''){
       let childSvg = this._element.nativeElement.children[0];
       let viewBox = childSvg.getAttribute('viewBox').split(' ');
    let width = Number(viewBox[2]) - offsetX;
@@ -122,7 +122,7 @@ this.listeners.push(mdown);
     this.elStyle.top = (Number(this.elStyle.top.replace('px','')) + offsetY)+'px';
     this.elStyle.width = (Number(this.elStyle.width.replace('px','')) + offsetX)+'px';
     this.elStyle.height= (Number(this.elStyle.height.replace('px','')) - offsetY)+'px';
-      if(this.resizable){
+      if(this.resizable && this.resizable != 'false' && this.resizable != ''){
       let childSvg = this._element.nativeElement.children[0];
       let viewBox = childSvg.getAttribute('viewBox').split(' ');
    let width = Number(viewBox[2]) + offsetX;
@@ -135,7 +135,7 @@ this.listeners.push(mdown);
     this.elStyle.left = (Number(this.elStyle.left.replace('px','')) + offsetX)+'px';
     this.elStyle.width = (Number(this.elStyle.width.replace('px','')) - offsetX)+'px';
     this.elStyle.height= (Number(this.elStyle.height.replace('px','')) + offsetY)+'px';
-      if(this.resizable){
+      if(this.resizable && this.resizable != 'false' && this.resizable != ''){
       let childSvg = this._element.nativeElement.children[0];
       let viewBox = childSvg.getAttribute('viewBox').split(' ');
    let width = Number(viewBox[2]) - offsetX;
@@ -147,7 +147,7 @@ this.listeners.push(mdown);
   rightBottomResizer(offsetX: number, offsetY: number) {
     this.elStyle.width = (Number(this.elStyle.width.replace('px','')) + offsetX)+'px';
     this.elStyle.height= (Number(this.elStyle.height.replace('px','')) + offsetY)+'px';
-      if(this.resizable){
+      if(this.resizable && this.resizable != 'false' && this.resizable != ''){
       let childSvg = this._element.nativeElement.children[0];
       let viewBox = childSvg.getAttribute('viewBox').split(' ');
    let width = Number(viewBox[2]) + offsetX;

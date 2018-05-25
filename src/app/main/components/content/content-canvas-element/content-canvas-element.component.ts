@@ -34,12 +34,21 @@ get displayType(){
 return this.element.list ? '' : 'inline-block';	
 }
 
+get selected(){
+		this.renderer2.setAttribute(this.el.nativeElement,'selected',this._selected ? 'true' : 'false');
+		return this._selected;
+}
+
+set selected(val){
+	this.renderer2.setAttribute(this.el.nativeElement,'selected',val ? 'true' : 'false');
+	this._selected = val;
+}
 
 _selected:boolean = false;
 _hovered:boolean = false;
 @HostListener('mouseenter')
 onHover(){
-	if(!this._hovered && !this._selected){
+	if(!this._hovered && !this.selected){
 		this._hovered = true;
 		this.el.nativeElement.className += ' hovered';
 	}
@@ -47,17 +56,18 @@ onHover(){
 
 @HostListener('mouseleave')
 onUnhover(){
-	if(this._hovered && !this._selected){
+	if(this._hovered && !this.selected){
 		this._hovered = false;
 		this.el.nativeElement.className = this.el.nativeElement.className.replace(' hovered','');
 	}
 }
 @HostListener('dblclick',['$event'])
 onDoubleClick(evt){
-	if(!this._selected && ((this.list && !this.inner) || !this.list)){
-
-	this.removeSelectedClass();
-		this._selected = true;
+	let selected = this.el.nativeElement.getAttribute('selected');
+	if(selected == 'false' && ((this.list && !this.inner) || !this.list)){
+	this.deactivateDirectives();
+	this.removeCustomClass('selected');
+		this.selected = true;
 		
 		this.contentService.pushIntoSelection(this.el.nativeElement,false);
 		this.assignDimensions();
@@ -74,7 +84,7 @@ onDoubleClick(evt){
 		this.renderer2.setAttribute(this.el.nativeElement,'contenteditable','true');
 		this.el.nativeElement.focus();
 		
-			var caretRange = this.getMouseEventCaretRange(evt);
+		var caretRange = this.getMouseEventCaretRange(evt);
 	    var self = this;
 	    
 	    setTimeout(function() {
@@ -87,6 +97,7 @@ onDoubleClick(evt){
 }
 
 ngOnInit(){
+	this.removeCustomClass('hovered');
 	if(this.element){
 		this.el.nativeElement.style.left = this.inner ? '' :  this.element.attrs.x+'px';
 		this.el.nativeElement.style.top = this.inner ? '' :  this.element.attrs.y+'px';
@@ -100,7 +111,7 @@ ngOnInit(){
 	}
 	this.contentService.selectedElement.subscribe((element)=>{
 		if(element && element.id.includes('inner') && this.inner){
-			this._selected=false;
+			this.selected=false;
 		}
 	})
 }
@@ -117,13 +128,13 @@ updatePosition(id){
 
 
 blurElement(event){
-	this.removeSelectedClass();
+	this.removeCustomClass('selected');
 	if(this.inner){
 			this.el.nativeElement.style.width = '';
 			this.el.nativeElement.style.height = '';
 		}
-if(this._selected){
-		this._selected = false;
+if(this.selected){
+		this.selected = false;
 		this.el.nativeElement.isEditing = false;
 		this.el.nativeElement.canDrag = true;
 		if(this.el.nativeElement['ResizeableDir']){
@@ -221,11 +232,25 @@ selectRange(range) {
     }
 }
 
-removeSelectedClass(){
-	let selectedEls = document.querySelectorAll('.selected');
+removeCustomClass(className:string){
+	if(!className || className == '') return;
+	let selectedEls = document.querySelectorAll('.'+className);
 	[].forEach.call(selectedEls,(el)=>{
-		if(el && el.id.includes('inner')){
-			el.classList.remove('selected');
+		//if(el && el.id.includes('inner')){
+			el.classList.remove(className);
+		//}
+	})
+}
+
+deactivateDirectives(){
+	let elements = document.querySelectorAll('.selected');
+	[].forEach.call(elements,(el)=>{
+		if(el['ResizeableDir']){
+			el.isEditing = false;
+			el.canDrag= true;
+			el.setAttribute('selected',false);
+			el.classList.add('cursor-draggable');
+			el['ResizeableDir'].editMode();
 		}
 	})
 }

@@ -20,7 +20,7 @@ export class Streachable implements OnInit,AfterViewInit {
   py=0;
   els;
   stretcher:Function;
-  @Input() stretchable:boolean;
+  @Input() stretchable:any;
 
   public constructor(private _element: ElementRef, private _renderer: Renderer2,private cdr:ChangeDetectorRef) {
 
@@ -40,13 +40,13 @@ export class Streachable implements OnInit,AfterViewInit {
 
  
   editMode(){
-    if(this._element.nativeElement.parentElement.isEditing && this.stretchable){
+    if(this._element.nativeElement.parentElement.isEditing && (this.stretchable && this.stretchable != 'false' && this.stretchable != '')){
         this.createHandles(this._element.nativeElement.parentElement);
       this.startListeners();
       
       this.cdr.reattach();
       return true;
-    }else if(!this._element.nativeElement.parentElement.isEditing && this.stretchable){
+    }else if(!this._element.nativeElement.parentElement.isEditing &&  (this.stretchable && this.stretchable != 'false' && this.stretchable != '')){
       this.stopListeners();
      this.destroyHandles(this._element.nativeElement.parentElement);
       this.cdr.reattach();
